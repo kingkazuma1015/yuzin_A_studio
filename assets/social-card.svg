@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">YuzinA Studio — Vocal Mix / 歌ってみたMIX</title><desc id="desc">YuzinA Studio social card with an original audio studio illustration.</desc>
+<rect width="1200" height="630" fill="#fbfcfd"/>
+<circle cx="1100" cy="252" r="335" fill="#e7f1ef"/>
+<circle cx="1122" cy="85" r="113" fill="#efe8da" opacity=".75"/>
+<path d="M0 615h1200" stroke="#0f8b8d" stroke-width="30"/>
+<g transform="translate(70 77)" fill="none" stroke="#0f8b8d" stroke-width="5" stroke-linecap="round">
+  <path d="M0 18v12M13 10v28M26 0v48M39 11v26M52 18v12"/>
+</g>
+<text x="68" y="269" fill="#18232e" font-family="Noto Sans,Arial,sans-serif" font-weight="700" font-size="68" letter-spacing="-2">YuzinA Studio</text>
+<rect x="71" y="302" width="52" height="5" rx="2.5" fill="#d69f4a"/>
+<text x="68" y="378" fill="#0d6266" font-family="Noto Sans,Arial,sans-serif" font-weight="500" font-size="36">Vocal Mix</text>
+<text x="68" y="434" fill="#60707f" font-family="Noto Sans CJK JP,Noto Sans JP,sans-serif" font-size="30">歌ってみたMIX</text>
+<g transform="translate(684 131) scale(0.77)">
+      <ellipse cx="300" cy="491" rx="324" ry="26" fill="#0d6266" opacity=".055"/>
+      <path d="M68 244h474" stroke="#c4d6d8" stroke-width="2"/>
+      <g transform="translate(87 20)">
+        <rect x="0" y="0" width="399" height="236" rx="18" fill="#fff" stroke="#bfd4d5" stroke-width="2"/>
+        <rect x="12" y="12" width="375" height="204" rx="9" fill="#eff6f5"/>
+        <path d="M30 37h130" stroke="#b5cccc" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="362" cy="37" r="4" fill="#d69f4a"/>
+        <g transform="translate(26 52)"><path d="M0 65h347M0 22h347M0 108h347" stroke="#dce9e8" stroke-width="1"/>
+          <polyline points="0,65 8,57 16,73 24,48 32,83 40,33 48,100 56,53 64,77 72,23 80,109 88,48 96,86 104,57 112,72 120,65 128,57 136,73 144,48 152,83 160,33 168,100 176,53 184,77 192,23 200,109 208,48 216,86 224,57 232,72 240,65 248,57 256,73 264,48 272,83 280,33 288,100 296,53 304,77 312,23 320,109 328,48 336,86 344,57" fill="none" stroke="#0f8b8d" stroke-width="2.8" stroke-linejoin="round"/>
+        </g>
+        <path d="M167 237l-9 37h85l-9-37" fill="#dce9e8" stroke="#bfd4d5" stroke-width="2"/>
+        <path d="M142 278h114" stroke="#9ab9bb" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(4 129)">
+        <rect width="64" height="129" rx="9" fill="#ecf4f3" stroke="#bdd2d3" stroke-width="2"/>
+        <circle cx="32" cy="79" r="23" fill="#fff" stroke="#adc6c7" stroke-width="2"/>
+        <circle cx="32" cy="79" r="11" fill="#bad3d1"/>
+        <circle cx="32" cy="26" r="8" fill="#d69f4a" opacity=".8"/>
+      </g>
+      <g transform="translate(505 129)">
+        <rect width="64" height="129" rx="9" fill="#ecf4f3" stroke="#bdd2d3" stroke-width="2"/>
+        <circle cx="32" cy="79" r="23" fill="#fff" stroke="#adc6c7" stroke-width="2"/>
+        <circle cx="32" cy="79" r="11" fill="#bad3d1"/>
+        <circle cx="32" cy="26" r="8" fill="#d69f4a" opacity=".8"/>
+      </g>
+      <g transform="translate(81 310)">
+        <rect width="415" height="171" rx="17" fill="#ffffff" stroke="#b7ced0" stroke-width="2"/>
+        <path d="M16 120h384" stroke="#e1ecec"/>
+        <g transform="translate(30 0)"><rect x="12" y="22" width="5" height="90" rx="2.5" fill="#c2d5d5"/><rect x="1" y="38" width="27" height="13" rx="4" fill="#0f8b8d"/><circle cx="14.5" cy="140" r="10" fill="#ffffff" stroke="#98b8ba" stroke-width="2"/><path d="M14.5 130v7" stroke="#0d6266" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(77 0)"><rect x="12" y="22" width="5" height="90" rx="2.5" fill="#c2d5d5"/><rect x="1" y="61" width="27" height="13" rx="4" fill="#0f8b8d"/><circle cx="14.5" cy="140" r="10" fill="#ffffff" stroke="#98b8ba" stroke-width="2"/><path d="M14.5 130v7" stroke="#0d6266" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(124 0)"><rect x="12" y="22" width="5" height="90" rx="2.5" fill="#c2d5d5"/><rect x="1" y="84" width="27" height="13" rx="4" fill="#0f8b8d"/><circle cx="14.5" cy="140" r="10" fill="#ffffff" stroke="#98b8ba" stroke-width="2"/><path d="M14.5 130v7" stroke="#0d6266" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(171 0)"><rect x="12" y="22" width="5" height="90" rx="2.5" fill="#c2d5d5"/><rect x="1" y="57" width="27" height="13" rx="4" fill="#0f8b8d"/><circle cx="14.5" cy="140" r="10" fill="#ffffff" stroke="#98b8ba" stroke-width="2"/><path d="M14.5 130v7" stroke="#0d6266" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(218 0)"><rect x="12" y="22" width="5" height="90" rx="2.5" fill="#c2d5d5"/><rect x="1" y="80" width="27" height="13" rx="4" fill="#0f8b8d"/><circle cx="14.5" cy="140" r="10" fill="#ffffff" stroke="#98b8ba" stroke-width="2"/><path d="M14.5 130v7" stroke="#0d6266" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(265 0)"><rect x="12" y="22" width="5" height="90" rx="2.5" fill="#c2d5d5"/><rect x="1" y="53" width="27" height="13" rx="4" fill="#d69f4a"/><circle cx="14.5" cy="140" r="10" fill="#ffffff" stroke="#98b8ba" stroke-width="2"/><path d="M14.5 130v7" stroke="#0d6266" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(312 0)"><rect x="12" y="22" width="5" height="90" rx="2.5" fill="#c2d5d5"/><rect x="1" y="76" width="27" height="13" rx="4" fill="#0f8b8d"/><circle cx="14.5" cy="140" r="10" fill="#ffffff" stroke="#98b8ba" stroke-width="2"/><path d="M14.5 130v7" stroke="#0d6266" stroke-width="2" stroke-linecap="round"/></g>
+      </g>
+      <g transform="translate(540 301)" stroke="#789ea1" stroke-width="3" fill="none" stroke-linecap="round">
+        <rect x="-3" y="0" width="39" height="77" rx="19.5" fill="#fff"/>
+        <path d="M4 17h25M4 27h25M4 37h25M4 47h25" stroke="#bfd4d5" stroke-width="2"/>
+        <path d="M-14 45v16a31 31 0 0 0 62 0V45M17 92v64M-12 157h58"/>
+        <circle cx="17" cy="169" r="2" fill="#d69f4a" stroke="none"/>
+      </g>
+    </g>
+</svg>

@@ -1,329 +1,264 @@
 const year = document.querySelector("#year");
 const menuToggle = document.querySelector(".menu-toggle");
 const nav = document.querySelector("#global-nav");
-const navLinks = document.querySelectorAll(".nav a");
-const worksMarquee = document.querySelector(".works-marquee");
-const revealSections = document.querySelectorAll(".reveal-section");
-const mailModal = document.querySelector("#mail-modal");
-const openMailButton = document.querySelector("[data-open-mail]");
-const closeMailButtons = document.querySelectorAll("[data-close-mail]");
-const mailForm = document.querySelector(".mail-form");
+const mobileQuery = window.matchMedia("(max-width: 760px)");
+const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 
-year.textContent = new Date().getFullYear();
+if (year) year.textContent = new Date().getFullYear();
 
+const closeMenu = () => {
+  nav.classList.remove("is-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.setAttribute("aria-label", "メニューを開く");
+};
 menuToggle.addEventListener("click", () => {
   const isOpen = nav.classList.toggle("is-open");
   menuToggle.setAttribute("aria-expanded", String(isOpen));
+  menuToggle.setAttribute("aria-label", isOpen ? "メニューを閉じる" : "メニューを開く");
+});
+nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+mobileQuery.addEventListener("change", closeMenu);
+nav.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && mobileQuery.matches) {
+    closeMenu();
+    menuToggle.focus();
+  }
 });
 
-navLinks.forEach((link) => {
-  link.addEventListener("click", () => {
-    nav.classList.remove("is-open");
-    menuToggle.setAttribute("aria-expanded", "false");
-  });
-});
-
-if (revealSections.length) {
-  const revealObserver = new IntersectionObserver((entries) => {
+const revealSections = document.querySelectorAll(".reveal-section");
+if ("IntersectionObserver" in window && !motionQuery.matches) {
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("is-visible");
-        revealObserver.unobserve(entry.target);
+        observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.16 });
-
+  }, { threshold: 0.08 });
   revealSections.forEach((section) => {
-    revealObserver.observe(section);
+    section.classList.add("reveal-ready");
+    observer.observe(section);
+  });
+  motionQuery.addEventListener("change", () => {
+    if (motionQuery.matches) {
+      revealSections.forEach((section) => section.classList.add("is-visible"));
+      observer.disconnect();
+    }
   });
 }
 
-if (mailModal && openMailButton && mailForm) {
-  let closeMailTimer = null;
-
-  const openMailModal = () => {
-    window.clearTimeout(closeMailTimer);
-    mailModal.classList.add("is-open");
-    mailModal.setAttribute("aria-hidden", "false");
+const mailDialog = document.querySelector("#mail-modal");
+const openMailButton = document.querySelector("[data-open-mail]");
+const mailForm = document.querySelector(".mail-form");
+if (mailDialog && openMailButton && mailForm) {
+  const status = mailForm.querySelector(".mail-status");
+  let previousOverflow = "";
+  openMailButton.addEventListener("click", () => {
+    if (mailDialog.open) return;
+    status.textContent = "";
+    previousOverflow = document.body.style.overflow;
+    // A modal native dialog keeps the rest of the document inert and restores focus.
+    mailDialog.showModal();
     document.body.style.overflow = "hidden";
-    const subjectInput = mailForm.querySelector('input[name="subject"]');
-
-    window.setTimeout(() => {
-      subjectInput.focus();
-      subjectInput.setSelectionRange(subjectInput.value.length, subjectInput.value.length);
-    }, 120);
-  };
-
-  const closeMailModal = () => {
-    mailModal.classList.remove("is-open");
-    mailModal.setAttribute("aria-hidden", "true");
-    closeMailTimer = window.setTimeout(() => {
-      document.body.style.overflow = "";
-      openMailButton.focus();
-    }, 320);
-  };
-
-  openMailButton.addEventListener("click", openMailModal);
-
-  closeMailButtons.forEach((button) => {
-    button.addEventListener("click", closeMailModal);
+    const subject = mailForm.elements.namedItem("subject");
+    subject.focus();
+    subject.setSelectionRange(subject.value.length, subject.value.length);
   });
-
-  mailModal.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMailModal();
+  mailDialog.querySelector("[data-close-mail]").addEventListener("click", () => mailDialog.close());
+  mailDialog.addEventListener("close", () => {
+    document.body.style.overflow = previousOverflow;
+    openMailButton.focus();
+  });
+  mailDialog.addEventListener("click", (event) => {
+    if (event.target !== mailDialog) return;
+    const rect = mailDialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) {
+      mailDialog.close();
     }
   });
-
+  mailDialog.querySelectorAll("[data-copy-mail]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const field = mailForm.elements.namedItem(button.dataset.copyMail);
+      const label = { to: "宛先", subject: "件名", body: "本文" }[button.dataset.copyMail];
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+        await navigator.clipboard.writeText(field.value);
+        status.textContent = `${label}をコピーしました。メールサービスに貼り付けてください。`;
+      } catch {
+        field.focus();
+        field.select();
+        status.textContent = `自動コピーが使えません。選択した${label}を長押し、またはコピー操作でコピーしてください。`;
+      }
+    });
+  });
   mailForm.addEventListener("submit", (event) => {
     event.preventDefault();
-
-    const formData = new FormData(mailForm);
-    const to = formData.get("to");
-    const subject = encodeURIComponent(formData.get("subject") || "");
-    const body = encodeURIComponent(formData.get("body") || "");
-
+    const to = mailForm.elements.namedItem("to").value;
+    const subject = encodeURIComponent(mailForm.elements.namedItem("subject").value);
+    const body = encodeURIComponent(mailForm.elements.namedItem("body").value.replace(/\r?\n/g, "\r\n"));
+    status.textContent = "メールアプリで内容を確認して送信してください。開かない場合はコピー機能をご利用ください。";
     window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
   });
 }
 
-if (worksMarquee) {
-  const track = worksMarquee.querySelector(".works-track");
-  track.querySelectorAll(".work-card[aria-hidden='true']").forEach((card) => card.remove());
-  const originalCards = Array.from(track.querySelectorAll(".work-card"));
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isMobileWorks = window.matchMedia("(max-width: 760px)").matches;
-
-  if (isMobileWorks) {
-    worksMarquee.classList.add("is-vertical-works");
-
-    let ticking = false;
-
-    const updateVerticalDepth = () => {
-      const marqueeRect = worksMarquee.getBoundingClientRect();
-      const centerY = marqueeRect.top + marqueeRect.height / 2;
-
-      originalCards.forEach((card) => {
-        const cardRect = card.getBoundingClientRect();
-        const cardCenterY = cardRect.top + cardRect.height / 2;
-        const distance = (cardCenterY - centerY) / marqueeRect.height;
-        const absDistance = Math.min(Math.abs(distance), 1);
-        const scale = 1.02 - absDistance * 0.22;
-        const translateZ = 110 - absDistance * 160;
-        const rotateX = distance * -16;
-        const opacity = 1 - absDistance * 0.38;
-        const shadow = 0.22 - absDistance * 0.12;
-
-        card.style.setProperty("--work-scale", scale.toFixed(3));
-        card.style.setProperty("--work-z", `${translateZ.toFixed(1)}px`);
-        card.style.setProperty("--work-rotate", `${rotateX.toFixed(1)}deg`);
-        card.style.setProperty("--work-opacity", opacity.toFixed(3));
-        card.style.setProperty("--work-shadow", shadow.toFixed(3));
-        card.style.zIndex = String(Math.round((1 - absDistance) * 100));
-      });
-
-      ticking = false;
-    };
-
-    const requestDepthUpdate = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateVerticalDepth);
-        ticking = true;
-      }
-    };
-
-    worksMarquee.addEventListener("scroll", requestDepthUpdate, { passive: true });
-    window.addEventListener("resize", requestDepthUpdate);
-    window.addEventListener("load", requestDepthUpdate);
-    requestDepthUpdate();
-  } else {
-  const previousCards = originalCards.map((card) => card.cloneNode(true));
-  const nextCards = originalCards.map((card) => card.cloneNode(true));
-  let isDragging = false;
-  let isHovering = false;
-  let dragStarted = false;
-  let startX = 0;
-  let startScrollLeft = 0;
-  let lastTimestamp = 0;
-  let lastPointerX = 0;
-  let lastPointerTime = 0;
-  let inertiaVelocity = 0;
-  let pressedCard = null;
+const gallery = document.querySelector(".works-marquee");
+if (gallery) {
+  const track = gallery.querySelector(".works-track");
+  const cards = Array.from(track.querySelectorAll(".work-card"));
+  const prevButton = document.querySelector("[data-works-prev]");
+  const nextButton = document.querySelector("[data-works-next]");
+  const pauseButton = document.querySelector("[data-works-pause]");
+  let loopEnabled = false;
   let loopStart = 0;
   let loopWidth = 0;
-  let loopBuffer = 0;
-  const autoSpeed = prefersReducedMotion ? 0 : 34;
-  const friction = 0.0045;
+  let userPaused = false;
+  let hovered = false;
+  let focused = false;
+  let inView = true;
+  let frame = 0;
+  let lastTime = 0;
+  let drag = null;
+  let suppressClickUntil = 0;
 
-  const prepareClone = (card) => {
-    card.setAttribute("aria-hidden", "true");
-    card.setAttribute("tabindex", "-1");
-    card.querySelectorAll("img").forEach((image) => {
-      image.alt = "";
-    });
+  const updateButtons = () => {
+    prevButton.disabled = !loopEnabled && gallery.scrollLeft <= 1;
+    nextButton.disabled = !loopEnabled && gallery.scrollLeft >= gallery.scrollWidth - gallery.clientWidth - 1;
+    pauseButton.hidden = !loopEnabled;
+    pauseButton.setAttribute("aria-pressed", String(userPaused));
+    pauseButton.textContent = userPaused ? "自動スクロールを再開" : "自動スクロールを停止";
   };
-
-  previousCards.forEach(prepareClone);
-  nextCards.forEach(prepareClone);
-
-  const previousFragment = document.createDocumentFragment();
-  const nextFragment = document.createDocumentFragment();
-
-  previousCards.forEach((card) => previousFragment.appendChild(card));
-  nextCards.forEach((card) => nextFragment.appendChild(card));
-  track.insertBefore(previousFragment, track.firstChild);
-  track.appendChild(nextFragment);
-
-  const updateLoopWidth = () => {
-    const firstOriginalCard = originalCards[0];
-    const firstNextCard = nextCards[0];
-
-    if (!firstOriginalCard || !firstNextCard) {
-      loopStart = 0;
-      loopWidth = track.scrollWidth / 3;
-      return;
-    }
-
-    loopStart = firstOriginalCard.offsetLeft;
-    loopWidth = firstNextCard.offsetLeft - loopStart;
-    loopBuffer = Math.min(worksMarquee.clientWidth * 0.55, loopWidth * 0.24);
-
-    if (worksMarquee.scrollLeft < loopStart || worksMarquee.scrollLeft >= loopStart + loopWidth) {
-      worksMarquee.scrollLeft = loopStart;
+  const normalize = () => {
+    if (!loopEnabled || !loopWidth || focused) return;
+    if (gallery.scrollLeft >= loopStart + loopWidth) gallery.scrollLeft -= loopWidth;
+    else if (gallery.scrollLeft < loopStart) gallery.scrollLeft += loopWidth;
+  };
+  const canAnimate = () => loopEnabled && !userPaused && !hovered && !focused && !drag && inView && !document.hidden;
+  const animate = (time) => {
+    frame = 0;
+    if (!canAnimate()) { lastTime = 0; return; }
+    if (lastTime) gallery.scrollLeft += 34 * Math.min(time - lastTime, 64) / 1000;
+    lastTime = time;
+    normalize();
+    frame = window.requestAnimationFrame(animate);
+  };
+  const syncAnimation = () => {
+    if (canAnimate() && !frame) frame = window.requestAnimationFrame(animate);
+    else if (!canAnimate()) {
+      window.cancelAnimationFrame(frame);
+      frame = 0;
+      lastTime = 0;
     }
   };
-
-  const normalizeScroll = () => {
-    if (!loopWidth) {
-      return;
-    }
-
-    if (worksMarquee.scrollLeft >= loopStart + loopWidth + loopBuffer) {
-      worksMarquee.scrollLeft -= loopWidth;
-    } else if (worksMarquee.scrollLeft < loopStart - loopBuffer) {
-      worksMarquee.scrollLeft += loopWidth;
-    }
+  const pauseForInteraction = () => {
+    userPaused = true;
+    syncAnimation();
+    updateButtons();
   };
-
-  const normalizeDragScroll = () => {
-    if (!loopWidth) {
-      return;
-    }
-
-    if (worksMarquee.scrollLeft >= loopStart + loopWidth + loopBuffer) {
-      worksMarquee.scrollLeft -= loopWidth;
-      startScrollLeft -= loopWidth;
-    } else if (worksMarquee.scrollLeft < loopStart - loopBuffer) {
-      worksMarquee.scrollLeft += loopWidth;
-      startScrollLeft += loopWidth;
-    }
+  const shouldLoop = () => {
+    const step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
+    return !mobileQuery.matches && !motionQuery.matches && pointerQuery.matches && gallery.clientWidth < step * cards.length;
   };
-
-  const animateWorks = (timestamp) => {
-    if (!lastTimestamp) {
-      lastTimestamp = timestamp;
-    }
-
-    const elapsed = timestamp - lastTimestamp;
-    lastTimestamp = timestamp;
-
-    if (!isDragging && Math.abs(inertiaVelocity) > 0.02) {
-      worksMarquee.scrollLeft += inertiaVelocity * elapsed;
-      inertiaVelocity *= Math.exp(-friction * elapsed);
-      normalizeScroll();
-    } else if (!isDragging && !isHovering) {
-      inertiaVelocity = 0;
-      worksMarquee.scrollLeft += (autoSpeed * elapsed) / 1000;
-      normalizeScroll();
-    }
-
-    window.requestAnimationFrame(animateWorks);
+  const measure = () => {
+    loopStart = loopEnabled ? cards[0].offsetLeft : 0;
+    const nextClone = track.querySelector("[data-loop-next]");
+    loopWidth = nextClone ? nextClone.offsetLeft - loopStart : 0;
+    updateButtons();
   };
-
-  updateLoopWidth();
-  window.addEventListener("resize", updateLoopWidth);
-  window.addEventListener("load", updateLoopWidth);
-  window.requestAnimationFrame(animateWorks);
-
-  worksMarquee.addEventListener("pointerdown", (event) => {
-    normalizeScroll();
-
-    isDragging = true;
-    dragStarted = false;
-    pressedCard = event.target.closest(".work-card");
-    inertiaVelocity = 0;
-    startX = event.clientX;
-    startScrollLeft = worksMarquee.scrollLeft;
-    lastPointerX = event.clientX;
-    lastPointerTime = event.timeStamp;
-    worksMarquee.classList.add("is-dragging");
-    worksMarquee.setPointerCapture(event.pointerId);
+  const configureGallery = () => {
+    window.cancelAnimationFrame(frame);
+    frame = 0;
+    lastTime = 0;
+    drag = null;
+    gallery.classList.remove("is-dragging");
+    // CSS controls the mobile layout; mode changes rebuild only desktop loop copies.
+    track.querySelectorAll("[data-loop-clone]").forEach((card) => card.remove());
+    loopEnabled = shouldLoop();
+    if (loopEnabled) {
+      const cloneGroup = (next) => {
+        const fragment = document.createDocumentFragment();
+        cards.forEach((card, index) => {
+          const clone = card.cloneNode(true);
+          clone.dataset.loopClone = "";
+          if (next && index === 0) clone.dataset.loopNext = "";
+          clone.setAttribute("aria-hidden", "true");
+          clone.setAttribute("tabindex", "-1");
+          clone.querySelector("img").alt = "";
+          fragment.appendChild(clone);
+        });
+        return fragment;
+      };
+      track.prepend(cloneGroup(false));
+      track.append(cloneGroup(true));
+    }
+    measure();
+    const focusedCard = cards.find((card) => card === document.activeElement);
+    gallery.scrollLeft = focusedCard ? focusedCard.offsetLeft : loopStart;
+    updateButtons();
+    syncAnimation();
+  };
+  [mobileQuery, motionQuery, pointerQuery].forEach((query) => query.addEventListener("change", configureGallery));
+  window.addEventListener("resize", () => {
+    if (loopEnabled !== shouldLoop()) configureGallery();
+    else { measure(); normalize(); }
   });
-
-  worksMarquee.addEventListener("pointermove", (event) => {
-    if (!isDragging) {
-      return;
-    }
-
-    const moveX = event.clientX - startX;
-    const elapsed = event.timeStamp - lastPointerTime;
-
-    if (Math.abs(moveX) > 6) {
-      dragStarted = true;
-    }
-
-    worksMarquee.scrollLeft = startScrollLeft - moveX;
-
-    if (elapsed > 0) {
-      inertiaVelocity = -(event.clientX - lastPointerX) / elapsed;
-      lastPointerX = event.clientX;
-      lastPointerTime = event.timeStamp;
-    }
-
-    normalizeDragScroll();
+  window.addEventListener("load", measure);
+  document.addEventListener("visibilitychange", syncAnimation);
+  gallery.addEventListener("mouseenter", () => { hovered = true; syncAnimation(); });
+  gallery.addEventListener("mouseleave", () => { hovered = false; syncAnimation(); });
+  gallery.addEventListener("focusin", () => { focused = true; syncAnimation(); });
+  gallery.addEventListener("focusout", (event) => {
+    if (!gallery.contains(event.relatedTarget)) { focused = false; syncAnimation(); }
   });
-
-  const stopDragging = (event) => {
-    if (!isDragging) {
-      return;
-    }
-
-    isDragging = false;
-    worksMarquee.classList.remove("is-dragging");
-
-    if (worksMarquee.hasPointerCapture(event.pointerId)) {
-      worksMarquee.releasePointerCapture(event.pointerId);
-    }
+  gallery.addEventListener("wheel", pauseForInteraction, { passive: true });
+  gallery.addEventListener("scroll", updateButtons, { passive: true });
+  const moveGallery = (direction) => {
+    pauseForInteraction();
+    normalize();
+    const step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
+    gallery.scrollBy({ left: direction * step, behavior: motionQuery.matches || loopEnabled ? "auto" : "smooth" });
   };
-
-  worksMarquee.addEventListener("pointerup", stopDragging);
-  worksMarquee.addEventListener("pointercancel", stopDragging);
-  worksMarquee.addEventListener("mouseenter", () => {
-    isHovering = true;
+  prevButton.addEventListener("click", () => moveGallery(-1));
+  nextButton.addEventListener("click", () => moveGallery(1));
+  pauseButton.addEventListener("click", () => {
+    userPaused = !userPaused;
+    updateButtons();
+    syncAnimation();
   });
-  worksMarquee.addEventListener("mouseleave", () => {
-    isHovering = false;
+  // Keep touch scrolling native. Mouse dragging never hijacks normal link clicks.
+  gallery.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    pauseForInteraction();
+    drag = { id: event.pointerId, startX: event.clientX, scrollLeft: gallery.scrollLeft, moved: false };
   });
-  worksMarquee.addEventListener("click", (event) => {
-    if (dragStarted) {
-      event.preventDefault();
-      dragStarted = false;
-      pressedCard = null;
-      return;
+  gallery.addEventListener("pointermove", (event) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    const distance = event.clientX - drag.startX;
+    if (Math.abs(distance) > 6 && !drag.moved) {
+      drag.moved = true;
+      gallery.setPointerCapture(event.pointerId);
+      gallery.classList.add("is-dragging");
     }
-
-    const clickedCard = event.target.closest(".work-card") || pressedCard;
-
-    if (clickedCard) {
-      event.preventDefault();
-      const youtubeWindow = window.open(clickedCard.href, "_blank");
-
-      if (youtubeWindow) {
-        youtubeWindow.opener = null;
-      }
-    }
-
-    pressedCard = null;
+    if (drag.moved) gallery.scrollLeft = drag.scrollLeft - distance;
   });
+  const stopDrag = (event) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    if (drag.moved) suppressClickUntil = Date.now() + 250;
+    if (gallery.hasPointerCapture(event.pointerId)) gallery.releasePointerCapture(event.pointerId);
+    drag = null;
+    gallery.classList.remove("is-dragging");
+    normalize();
+    syncAnimation();
+  };
+  gallery.addEventListener("pointerup", stopDrag);
+  gallery.addEventListener("pointercancel", stopDrag);
+  window.addEventListener("pointerup", stopDrag);
+  gallery.addEventListener("click", (event) => {
+    if (event.detail !== 0 && Date.now() < suppressClickUntil) event.preventDefault();
+  });
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; syncAnimation(); });
+    observer.observe(gallery);
   }
+  configureGallery();
 }

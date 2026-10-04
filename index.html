@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -9,14 +9,21 @@
   <meta property="og:site_name" content="YuzinA Studio">
   <meta property="og:title" content="YuzinA Studio | 歌ってみたMIX依頼受付">
   <meta property="og:description" content="MIX歴11年、担当作品2,000本以上。歌声の良さを残して、聴きやすいMIXへ仕上げます。">
-  <meta property="og:image" content="assets/hero-studio-illustration.png">
+  <meta property="og:url" content="https://kingkazuma1015.github.io/yuzin_A_studio/">
+  <meta property="og:image" content="https://kingkazuma1015.github.io/yuzin_A_studio/assets/social-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="YuzinA Studio / 歌ってみたMIX">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="YuzinA Studio | 歌ってみたMIX依頼受付">
   <meta name="twitter:description" content="MIX歴11年、担当作品2,000本以上。歌声の良さを残して、聴きやすいMIXへ仕上げます。">
-  <meta name="twitter:image" content="assets/hero-studio-illustration.png">
+  <meta name="twitter:image" content="https://kingkazuma1015.github.io/yuzin_A_studio/assets/social-card.png">
+  <meta name="twitter:image:alt" content="YuzinA Studio / 歌ってみたMIX">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a class="skip-link" href="#top">本文へ移動</a>
   <header class="site-header">
     <a class="logo" href="#top" aria-label="YuzinA Studio トップへ">YuzinA Studio</a>
     <button class="menu-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="global-nav">
@@ -34,7 +41,7 @@
     </nav>
   </header>
 
-  <main id="top">
+  <main id="top" tabindex="-1">
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">YuzinA Studio / Vocal Mix</p>
@@ -65,62 +72,42 @@
         <p class="section-label">Works</p>
         <h2 id="works-title">担当作品</h2>
       </div>
-      <div class="works-marquee" aria-label="過去作品のYouTubeリンク一覧">
+      <div class="works-controls" aria-label="作品一覧の操作">
+        <p id="works-help">横にスワイプ、または矢印で作品を見られます。各作品はYouTubeで開きます。</p>
+        <div class="works-buttons">
+          <button type="button" data-works-prev aria-label="前の作品を表示" aria-controls="works-gallery">←</button>
+          <button type="button" data-works-next aria-label="次の作品を表示" aria-controls="works-gallery">→</button>
+          <button type="button" data-works-pause aria-pressed="false" hidden>自動スクロールを停止</button>
+        </div>
+      </div>
+      <div class="works-marquee" id="works-gallery" role="region" aria-label="過去作品のYouTubeリンク一覧" aria-describedby="works-help">
         <div class="works-track">
           <a class="work-card" href="https://www.youtube.com/watch?v=nPdiQRCIZgU" target="_blank" rel="noopener noreferrer" draggable="false">
-            <img src="https://img.youtube.com/vi/nPdiQRCIZgU/hqdefault.jpg" alt="担当作品 01 のYouTubeサムネイル" draggable="false">
+            <img src="https://img.youtube.com/vi/nPdiQRCIZgU/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async" alt="担当作品 01 のYouTubeサムネイル" draggable="false">
             <span>Works 01</span>
           </a>
           <a class="work-card" href="https://www.youtube.com/watch?v=ff8gzBQj97k" target="_blank" rel="noopener noreferrer" draggable="false">
-            <img src="https://img.youtube.com/vi/ff8gzBQj97k/hqdefault.jpg" alt="担当作品 02 のYouTubeサムネイル" draggable="false">
+            <img src="https://img.youtube.com/vi/ff8gzBQj97k/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async" alt="担当作品 02 のYouTubeサムネイル" draggable="false">
             <span>Works 02</span>
           </a>
           <a class="work-card" href="https://www.youtube.com/watch?v=C5pBFTSH80U" target="_blank" rel="noopener noreferrer" draggable="false">
-            <img src="https://img.youtube.com/vi/C5pBFTSH80U/hqdefault.jpg" alt="担当作品 03 のYouTubeサムネイル" draggable="false">
+            <img src="https://img.youtube.com/vi/C5pBFTSH80U/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async" alt="担当作品 03 のYouTubeサムネイル" draggable="false">
             <span>Works 03</span>
           </a>
           <a class="work-card" href="https://www.youtube.com/watch?v=NhQCRpMjMsk" target="_blank" rel="noopener noreferrer" draggable="false">
-            <img src="https://img.youtube.com/vi/NhQCRpMjMsk/hqdefault.jpg" alt="担当作品 04 のYouTubeサムネイル" draggable="false">
+            <img src="https://img.youtube.com/vi/NhQCRpMjMsk/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async" alt="担当作品 04 のYouTubeサムネイル" draggable="false">
             <span>Works 04</span>
           </a>
           <a class="work-card" href="https://www.youtube.com/watch?v=x0Gb0TiSjYA" target="_blank" rel="noopener noreferrer" draggable="false">
-            <img src="https://img.youtube.com/vi/x0Gb0TiSjYA/hqdefault.jpg" alt="担当作品 05 のYouTubeサムネイル" draggable="false">
+            <img src="https://img.youtube.com/vi/x0Gb0TiSjYA/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async" alt="担当作品 05 のYouTubeサムネイル" draggable="false">
             <span>Works 05</span>
           </a>
           <a class="work-card" href="https://www.youtube.com/watch?v=FeaVQIexvTI" target="_blank" rel="noopener noreferrer" draggable="false">
-            <img src="https://img.youtube.com/vi/FeaVQIexvTI/hqdefault.jpg" alt="担当作品 06 のYouTubeサムネイル" draggable="false">
+            <img src="https://img.youtube.com/vi/FeaVQIexvTI/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async" alt="担当作品 06 のYouTubeサムネイル" draggable="false">
             <span>Works 06</span>
           </a>
           <a class="work-card" href="https://www.youtube.com/watch?v=D45YV-ZJ2Yc" target="_blank" rel="noopener noreferrer" draggable="false">
-            <img src="https://img.youtube.com/vi/D45YV-ZJ2Yc/hqdefault.jpg" alt="担当作品 07 のYouTubeサムネイル" draggable="false">
-            <span>Works 07</span>
-          </a>
-          <a class="work-card" href="https://www.youtube.com/watch?v=nPdiQRCIZgU" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" draggable="false">
-            <img src="https://img.youtube.com/vi/nPdiQRCIZgU/hqdefault.jpg" alt="" draggable="false">
-            <span>Works 01</span>
-          </a>
-          <a class="work-card" href="https://www.youtube.com/watch?v=ff8gzBQj97k" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" draggable="false">
-            <img src="https://img.youtube.com/vi/ff8gzBQj97k/hqdefault.jpg" alt="" draggable="false">
-            <span>Works 02</span>
-          </a>
-          <a class="work-card" href="https://www.youtube.com/watch?v=C5pBFTSH80U" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" draggable="false">
-            <img src="https://img.youtube.com/vi/C5pBFTSH80U/hqdefault.jpg" alt="" draggable="false">
-            <span>Works 03</span>
-          </a>
-          <a class="work-card" href="https://www.youtube.com/watch?v=NhQCRpMjMsk" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" draggable="false">
-            <img src="https://img.youtube.com/vi/NhQCRpMjMsk/hqdefault.jpg" alt="" draggable="false">
-            <span>Works 04</span>
-          </a>
-          <a class="work-card" href="https://www.youtube.com/watch?v=x0Gb0TiSjYA" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" draggable="false">
-            <img src="https://img.youtube.com/vi/x0Gb0TiSjYA/hqdefault.jpg" alt="" draggable="false">
-            <span>Works 05</span>
-          </a>
-          <a class="work-card" href="https://www.youtube.com/watch?v=FeaVQIexvTI" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" draggable="false">
-            <img src="https://img.youtube.com/vi/FeaVQIexvTI/hqdefault.jpg" alt="" draggable="false">
-            <span>Works 06</span>
-          </a>
-          <a class="work-card" href="https://www.youtube.com/watch?v=D45YV-ZJ2Yc" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" draggable="false">
-            <img src="https://img.youtube.com/vi/D45YV-ZJ2Yc/hqdefault.jpg" alt="" draggable="false">
+            <img src="https://img.youtube.com/vi/D45YV-ZJ2Yc/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async" alt="担当作品 07 のYouTubeサムネイル" draggable="false">
             <span>Works 07</span>
           </a>
         </div>
@@ -221,8 +208,8 @@
         </div>
         <div class="price-row" role="row">
           <div role="cell">スピード納品</div>
-          <div role="cell">¥15,000</div>
-          <div role="cell">お支払い確認後、1日で納品します。</div>
+          <div role="cell">¥15,000（MIX込み総額）</div>
+          <div role="cell">MIX料金を含む総額です。お支払い確認後、1日で納品します。</div>
         </div>
         <div class="price-row" role="row">
           <div role="cell">パラミックス</div>
@@ -247,7 +234,7 @@
         <article>
           <span>01</span>
           <h3>納期目安</h3>
-          <p>通常納期は5〜7日程度です。スピード納品は、お支払い確認後1日で納品します。</p>
+          <p>通常は音源とご入金が揃ってから、5〜7日程度で初稿をお送りします。スピード納品はMIX込み総額¥15,000で、お支払い確認後1日で納品します。</p>
         </article>
         <article>
           <span>02</span>
@@ -259,10 +246,12 @@
           <h3>ご用意いただくもの</h3>
           <ul>
             <li>ボーカル音源</li>
-            <li>参考音源</li>
+            <li>伴奏音源（オフボーカル・インスト）</li>
+            <li>仕上がりの参考音源・参考URL</li>
             <li>歌詞</li>
             <li>ご希望の仕上がりイメージ、ご要望</li>
           </ul>
+          <p class="guide-help">ファイル形式や頭出しなどが分からない場合は、ご依頼前にご相談ください。</p>
         </article>
       </div>
     </section>
@@ -282,14 +271,14 @@
           <span>02</span>
           <div>
             <h3>データ確認・お見積もり</h3>
-            <p>ボーカル音源、参考音源、歌詞を確認して金額と納期をご案内します。</p>
+            <p>ボーカル音源、伴奏音源、参考音源、歌詞を確認して金額と納期をご案内します。</p>
           </div>
         </li>
         <li>
           <span>03</span>
           <div>
             <h3>MIX制作</h3>
-            <p>補正、MIX、マスタリングを進め、確認用音源をお送りします。</p>
+            <p>音源とご入金が揃ってから制作を開始します。補正、MIX、マスタリングを進め、通常5〜7日程度で初稿をお送りします。</p>
           </div>
         </li>
         <li>
@@ -316,7 +305,7 @@
         </details>
         <details>
           <summary>納期はどのくらいですか？</summary>
-          <p>通常は5〜7日程度を目安にしています。お急ぎの場合はスピード納品をご利用ください。</p>
+          <p>音源とご入金が揃ってから初稿をお送りするまで、通常5〜7日程度が目安です。修正・最終納品までの日程は内容に応じてご相談ください。お急ぎの場合はスピード納品をご利用ください。</p>
         </details>
         <details>
           <summary>修正はお願いできますか？</summary>
@@ -338,17 +327,16 @@
       </p>
       <div class="contact-buttons">
         <a class="button" href="https://x.com/yuzin_A_" target="_blank" rel="noopener noreferrer">X / Twitter</a>
-        <button class="button secondary" type="button" data-open-mail>メール</button>
+        <button class="button secondary" type="button" data-open-mail aria-haspopup="dialog" aria-controls="mail-modal">メール</button>
       </div>
     </section>
   </main>
 
-  <div class="mail-modal" id="mail-modal" aria-hidden="true">
-    <div class="mail-modal-backdrop" data-close-mail></div>
-    <div class="mail-dialog" role="dialog" aria-modal="true" aria-labelledby="mail-title">
+  <dialog class="mail-dialog" id="mail-modal" aria-labelledby="mail-title" aria-describedby="mail-help">
       <button class="mail-close" type="button" aria-label="閉じる" data-close-mail>×</button>
       <p class="section-label">Mail</p>
       <h2 id="mail-title">メールで相談する</h2>
+      <p id="mail-help">ここでは送信されません。入力後にメールアプリを開き、内容を確認して送信してください。アプリが開かない場合は、宛先と本文をコピーしてお使いのメールサービスに貼り付けてください。</p>
       <form class="mail-form">
         <label>
           宛先
@@ -356,7 +344,7 @@
         </label>
         <label>
           件名
-          <input type="text" name="subject" value="MIX依頼の相談">
+          <input type="text" name="subject" value="MIX依頼の相談" autofocus>
         </label>
         <label>
           本文
@@ -366,12 +354,18 @@
 希望納期：
 参考音源URL：
 ボーカル音源URL：
+伴奏音源URL：
 その他ご要望：</textarea>
         </label>
         <button class="button" type="submit">メールアプリを開く</button>
+        <div class="mail-copy-actions">
+          <button class="button secondary" type="button" data-copy-mail="to">宛先をコピー</button>
+          <button class="button secondary" type="button" data-copy-mail="subject">件名をコピー</button>
+          <button class="button secondary" type="button" data-copy-mail="body">本文をコピー</button>
+        </div>
+        <p class="mail-status" role="status" aria-live="polite" aria-atomic="true"></p>
       </form>
-    </div>
-  </div>
+  </dialog>
 
   <footer class="site-footer">
     <p>&copy; <span id="year"></span> YuzinA Studio. All rights reserved.</p>
@@ -380,4 +374,5 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 

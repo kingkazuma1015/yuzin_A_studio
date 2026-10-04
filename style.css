@@ -111,7 +111,7 @@ a {
   inset: 0;
   background:
     linear-gradient(90deg, rgba(251, 252, 253, 0.98), rgba(251, 252, 253, 0.84) 48%, rgba(251, 252, 253, 0.18)),
-    url("assets/hero-studio-illustration.png") center right / cover no-repeat;
+    url("assets/hero-studio-illustration.svg") center right / cover no-repeat;
   content: "";
   opacity: 0.9;
   pointer-events: none;
@@ -297,14 +297,14 @@ h3 {
   scroll-behavior: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
   touch-action: pan-x pan-y pinch-zoom;
   user-select: none;
 }
 
-.works-marquee::-webkit-scrollbar {
-  display: none;
-}
+.works-marquee::-webkit-scrollbar { height: 6px; }
+.works-marquee::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 8px; }
 
 .works-marquee.is-dragging {
   cursor: grabbing;
@@ -451,13 +451,13 @@ h3 {
   color: var(--ink);
 }
 
-.reveal-section {
+.reveal-section.reveal-ready {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 700ms ease, transform 700ms var(--ease-out);
 }
 
-.reveal-section.is-visible {
+.reveal-section.reveal-ready.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -893,55 +893,26 @@ h3 {
   margin: 0;
 }
 
-.mail-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 260ms ease;
-}
-
-.mail-modal.is-open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.mail-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(16, 24, 32, 0.58);
-  backdrop-filter: blur(8px);
-  opacity: 0;
-  transition: opacity 300ms ease;
-}
-
 .mail-dialog {
-  position: relative;
-  width: min(100%, 620px);
-  max-height: calc(100vh - 40px);
+  position: fixed;
+  width: min(calc(100% - 32px), 620px);
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  margin: auto;
   overflow: auto;
+  overscroll-behavior: contain;
   padding: clamp(24px, 5vw, 38px);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.98);
   border: 1px solid rgba(15, 139, 141, 0.18);
   border-radius: 14px;
   box-shadow: 0 34px 90px rgba(16, 24, 32, 0.28);
-  opacity: 0;
-  transform: translateY(24px) scale(0.96);
-  transition: opacity 320ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text);
 }
 
-.mail-modal.is-open .mail-modal-backdrop {
-  opacity: 1;
-}
-
-.mail-modal.is-open .mail-dialog {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+.mail-dialog:not([open]) { display: none; }
+.mail-dialog::backdrop {
+  background: rgba(16, 24, 32, 0.58);
+  backdrop-filter: blur(8px);
 }
 
 .mail-dialog h2 {
@@ -1003,6 +974,9 @@ h3 {
 }
 
 @media (max-width: 980px) {
+  .site-header { flex-wrap: wrap; gap: 12px; }
+  .nav { flex-wrap: wrap; }
+
   .service-grid,
   .guide-grid,
   .flow-list {
@@ -1066,51 +1040,13 @@ h3 {
     gap: 14px;
   }
 
-  .works-marquee.is-vertical-works {
-    height: min(64vh, 500px);
-    min-height: 420px;
-    max-height: 500px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    margin: 20px 16px 0;
-    padding: 22px 0 34px;
-    cursor: default;
-    perspective: 820px;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-    touch-action: pan-y pinch-zoom;
-    -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.22), #000 12%, #000 88%, rgba(0, 0, 0, 0.22));
-    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.22), #000 12%, #000 88%, rgba(0, 0, 0, 0.22));
+  .works-marquee {
+    margin-top: 16px;
+    scroll-snap-type: x mandatory;
   }
 
-  .works-marquee.is-vertical-works .works-track {
-    display: grid;
-    width: 100%;
-    gap: 0;
-    padding: 34px 0 72px;
-    transform-style: preserve-3d;
-  }
-
-  .works-marquee.is-vertical-works .work-card {
-    width: min(82vw, 360px);
-    flex-basis: auto;
-    justify-self: center;
-    margin: -34px 0;
-    opacity: var(--work-opacity, 0.86);
-    transform: translateZ(var(--work-z, 0)) rotateX(var(--work-rotate, 0)) scale(var(--work-scale, 0.92));
-    transform-origin: center;
-    box-shadow: 0 18px 42px rgba(24, 35, 46, var(--work-shadow, 0.12));
-    transition: box-shadow 160ms ease, filter 160ms ease, opacity 160ms ease;
-    will-change: transform, opacity;
-  }
-
-  .works-marquee.is-vertical-works .work-card:first-child {
-    margin-top: 0;
-  }
-
-  .works-marquee.is-vertical-works .work-card:last-child {
-    margin-bottom: 0;
-  }
+  .works-track { padding: 6px 20px 20px; }
+  .work-card { flex-basis: min(82vw, 360px); scroll-snap-align: center; }
 
   .work-card {
     box-shadow: 0 10px 24px rgba(24, 35, 46, 0.12);
@@ -1193,7 +1129,7 @@ h3 {
   }
 
   .work-card {
-    flex-basis: 210px;
+    flex-basis: 82vw;
   }
 }
 
@@ -1205,4 +1141,38 @@ h3 {
   .works-track {
     animation: none;
   }
+}
+
+
+/* Usability additions keep the original palette and card design. */
+[hidden] { display: none !important; }
+section[id] { scroll-margin-top: 90px; }
+.skip-link { position: fixed; top: -100px; left: 16px; z-index: 100; padding: 10px 16px; background: white; color: var(--accent-dark); }
+.skip-link:focus { top: 12px; }
+.works-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(20px, 5vw, 72px); }
+.works-controls p { margin: 0; color: var(--muted); font-size: .9rem; }
+.works-buttons { display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+.works-buttons button { min-width: 44px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--accent-dark); font: inherit; font-size: .85rem; cursor: pointer; }
+.works-buttons button:disabled { opacity: .45; cursor: default; }
+.work-card:focus-visible { outline-offset: -4px; outline-color: var(--accent-warm); }
+.guide-help { margin: 16px 0 0; }
+.mail-dialog h2 { padding-right: 20px; }
+.mail-dialog #mail-help { color: var(--muted); font-size: .92rem; }
+.mail-close { width: 44px; height: 44px; }
+.mail-copy-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.mail-copy-actions .button { flex: 1 1 auto; padding: 10px 12px; font-size: .9rem; }
+.mail-status { margin: 0; min-height: 1.75em; color: var(--accent-dark); font-size: .92rem; }
+.reveal-section:not(.reveal-ready) .service-grid article,
+.reveal-section:not(.reveal-ready) .guide-grid article,
+.reveal-section:not(.reveal-ready) .flow-list li,
+.reveal-section:not(.reveal-ready) .faq-list details { opacity: 1; transform: none; }
+@media (max-width: 760px) {
+  .works-controls { display: block; }
+  .works-buttons { margin-top: 12px; }
+  .mail-form input, .mail-form textarea { font-size: 16px; }
+  .mail-copy-actions .button { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .reveal-section.reveal-ready, .service-grid article, .guide-grid article, .flow-list li, .faq-list details { opacity: 1 !important; transform: none !important; }
 }
