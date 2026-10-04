@@ -2,6 +2,7 @@
 from pathlib import Path
 from html.parser import HTMLParser
 import json, re, struct, subprocess
+import xml.etree.ElementTree as ET
 root=Path(__file__).resolve().parents[1]
 class Document(HTMLParser):
     def __init__(self):
@@ -48,12 +49,19 @@ assert png[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',png[16:24])==(1200,
 css=(root/'style.css').read_text()
 for url in re.findall(r'url\([\"\']?([^\)\"\']+)',css): assert (root/url).is_file(), url
 assert 'is-vertical-works' not in css and '--work-rotate' not in css
+assert 'hero-studio-illustration' not in css, 'Hero must remain illustration-free'
+hero_rule=re.search(r'\.hero \{([^}]+)',css).group(1)
+assert 'linear-gradient(110deg, #fbfcfd 0%, #f1f6f5 100%)' in hero_rule
+social=ET.parse(root/'assets/social-card.svg').getroot()
+assert not social.findall('.//{http://www.w3.org/2000/svg}image'), 'Social card must not embed an illustration'
+assert 'YuzinA Studio' in ''.join(social.itertext())
+assert '聴きやすいMIXへ。' in ''.join(social.itertext())
 # Check balanced rule/declaration blocks (not a CSS rendering test).
 plain=re.sub(r'/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'', '',css)
 depth=0
 for c in plain:
     depth+=(c=='{')-(c=='}'); assert depth>=0
 assert depth==0
-print('PASS: HTML nesting, IDs, local references, seven original videos, confirmed business text, social PNG, CSS blocks')
+print('PASS: HTML nesting, IDs, local references, seven original videos, confirmed business text, social PNG, illustration-free hero, text-only social source, CSS blocks')
 subprocess.run(['node','--check',str(root/'script.js')],check=True)
 subprocess.run(['node',str(root/'tests/check_interactions.cjs')],input=json.dumps(p.root),text=True,check=True)
