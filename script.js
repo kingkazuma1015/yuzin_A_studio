@@ -1,340 +1,342 @@
-const year = document.querySelector("#year");
-const menuToggle = document.querySelector(".menu-toggle");
-const nav = document.querySelector("#global-nav");
-const navLinks = document.querySelectorAll(".nav a");
-const worksMarquee = document.querySelector(".works-marquee");
-const revealSections = document.querySelectorAll(".reveal-section");
-const mailModal = document.querySelector("#mail-modal");
-const openMailButton = document.querySelector("[data-open-mail]");
-const closeMailButtons = document.querySelectorAll("[data-close-mail]");
-const mailForm = document.querySelector(".mail-form");
+const year = document.querySelector('#year');
+const menuToggle = document.querySelector('.menu-toggle');
+const nav = document.querySelector('#global-nav');
+const navLinks = document.querySelectorAll('.nav a');
+const worksMarquee = document.querySelector('.works-marquee');
+const revealSections = document.querySelectorAll('.reveal-section');
+const mailModal = document.querySelector('#mail-modal');
+const openMailButton = document.querySelector('[data-open-mail]');
+const closeMailButtons = document.querySelectorAll('[data-close-mail]');
+const mailForm = document.querySelector('.mail-form');
 
-year.textContent = new Date().getFullYear();
+if (year) year.textContent = new Date().getFullYear();
 
-menuToggle.addEventListener("click", () => {
-  const isOpen = nav.classList.toggle("is-open");
-  menuToggle.setAttribute("aria-expanded", String(isOpen));
+const closeMenu = () => {
+  nav.classList.remove('is-open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+  menuToggle.setAttribute('aria-label', 'メニューを開く');
+};
+menuToggle.addEventListener('click', () => {
+  const isOpen = nav.classList.toggle('is-open');
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
 });
+navLinks.forEach((link) => link.addEventListener('click', closeMenu));
+const handleMenuEscape = (event) => {
+  if (event.key === 'Escape') { closeMenu(); menuToggle.focus(); }
+};
+nav.addEventListener('keydown', handleMenuEscape);
+menuToggle.addEventListener('keydown', handleMenuEscape);
+window.matchMedia('(max-width: 760px)').addEventListener('change', closeMenu);
+nav.classList.add('is-collapsible');
+menuToggle.closest('.site-header').classList.add('has-menu');
+menuToggle.hidden = false;
 
-navLinks.forEach((link) => {
-  link.addEventListener("click", () => {
-    nav.classList.remove("is-open");
-    menuToggle.setAttribute("aria-expanded", "false");
-  });
-});
-
-if (revealSections.length) {
+// Content is visible without JavaScript. Only opt into reveal animations after
+// the observer is available, and reveal everything when motion is reduced.
+const revealMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (revealSections.length && 'IntersectionObserver' in window && !revealMotion.matches) {
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
+        entry.target.classList.add('is-visible');
         revealObserver.unobserve(entry.target);
       }
     });
   }, { threshold: 0.16 });
-
   revealSections.forEach((section) => {
+    section.classList.add('reveal-ready');
     revealObserver.observe(section);
+  });
+  revealMotion.addEventListener('change', () => {
+    if (revealMotion.matches) {
+      revealSections.forEach((section) => section.classList.add('is-visible'));
+      revealObserver.disconnect();
+    }
   });
 }
 
-if (mailModal && openMailButton && mailForm) {
-  let closeMailTimer = null;
-
-  const openMailModal = () => {
-    window.clearTimeout(closeMailTimer);
-    mailModal.classList.add("is-open");
-    mailModal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-    const subjectInput = mailForm.querySelector('input[name="subject"]');
-
-    window.setTimeout(() => {
-      subjectInput.focus();
-      subjectInput.setSelectionRange(subjectInput.value.length, subjectInput.value.length);
-    }, 120);
+if (mailModal && openMailButton && mailForm && typeof mailModal.showModal === 'function') {
+  let previousOverflow = '';
+  let scrollLocked = false;
+  const restoreMailState = () => {
+    if (!scrollLocked) return;
+    document.body.style.overflow = previousOverflow;
+    scrollLocked = false;
+    openMailButton.focus({ preventScroll: true });
   };
-
   const closeMailModal = () => {
-    mailModal.classList.remove("is-open");
-    mailModal.setAttribute("aria-hidden", "true");
-    closeMailTimer = window.setTimeout(() => {
-      document.body.style.overflow = "";
-      openMailButton.focus();
-    }, 320);
+    if (!mailModal.open) return;
+    mailModal.close();
+    restoreMailState();
   };
-
-  openMailButton.addEventListener("click", openMailModal);
-
-  closeMailButtons.forEach((button) => {
-    button.addEventListener("click", closeMailModal);
+  openMailButton.addEventListener('click', () => {
+    if (mailModal.open) return;
+    restoreMailState();
+    previousOverflow = document.body.style.overflow;
+    mailModal.showModal();
+    document.body.style.overflow = 'hidden';
+    scrollLocked = true;
+    const subjectInput = mailForm.querySelector('input[name="subject"]');
+    subjectInput.focus({ preventScroll: true });
+    subjectInput.setSelectionRange(subjectInput.value.length, subjectInput.value.length);
+    mailModal.scrollTop = 0;
   });
-
-  mailModal.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMailModal();
+  closeMailButtons.forEach((button) => button.addEventListener('click', closeMailModal));
+  mailModal.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab') return;
+    const fields = Array.from(mailModal.querySelectorAll('a[href], button, input, textarea, select, [tabindex]'))
+      .filter((field) => !field.disabled && field.tabIndex >= 0 && field.getClientRects().length);
+    if (!fields.length) { event.preventDefault(); return; }
+    const first = fields[0];
+    const last = fields[fields.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !fields.includes(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !fields.includes(active))) {
+      event.preventDefault();
+      first.focus();
     }
   });
-
-  mailForm.addEventListener("submit", (event) => {
+  mailModal.addEventListener('cancel', (event) => {
     event.preventDefault();
-
-    const formData = new FormData(mailForm);
-    const to = formData.get("to");
-    const subject = encodeURIComponent(formData.get("subject") || "");
-    const body = encodeURIComponent(formData.get("body") || "");
-
-    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    closeMailModal();
   });
+  mailModal.addEventListener('close', () => {
+    if (!mailModal.open) restoreMailState();
+  });
+  // Native modal behavior makes the background inert; explicit Tab wrapping
+  // above keeps focus in the dialog. Native Escape and closed-state handling remain.
+  mailModal.addEventListener('click', (event) => {
+    const rect = mailModal.getBoundingClientRect();
+    if (event.target === mailModal && (event.clientX < rect.left || event.clientX > rect.right
+      || event.clientY < rect.top || event.clientY > rect.bottom)) closeMailModal();
+  });
+  mailForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(mailForm);
+    const subject = encodeURIComponent(formData.get('subject') || '');
+    const body = encodeURIComponent(String(formData.get('body') || '').replace(/\r?\n/g, '\r\n'));
+    window.location.href = `mailto:${formData.get('to')}?subject=${subject}&body=${body}`;
+  });
+  openMailButton.hidden = false;
 }
 
 if (worksMarquee) {
-  const track = worksMarquee.querySelector(".works-track");
-  track.querySelectorAll(".work-card[aria-hidden='true']").forEach((card) => card.remove());
-  const originalCards = Array.from(track.querySelectorAll(".work-card"));
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isMobileWorks = window.matchMedia("(max-width: 760px)").matches;
-
-  if (isMobileWorks) {
-    worksMarquee.classList.add("is-vertical-works");
-
-    let ticking = false;
-
-    const updateVerticalDepth = () => {
-      const marqueeRect = worksMarquee.getBoundingClientRect();
-      const centerY = marqueeRect.top + marqueeRect.height / 2;
-
-      originalCards.forEach((card) => {
-        const cardRect = card.getBoundingClientRect();
-        const cardCenterY = cardRect.top + cardRect.height / 2;
-        const distance = (cardCenterY - centerY) / marqueeRect.height;
-        const absDistance = Math.min(Math.abs(distance), 1);
-        const scale = 1.02 - absDistance * 0.22;
-        const translateZ = 110 - absDistance * 160;
-        const rotateX = distance * -16;
-        const opacity = 1 - absDistance * 0.38;
-        const shadow = 0.22 - absDistance * 0.12;
-
-        card.style.setProperty("--work-scale", scale.toFixed(3));
-        card.style.setProperty("--work-z", `${translateZ.toFixed(1)}px`);
-        card.style.setProperty("--work-rotate", `${rotateX.toFixed(1)}deg`);
-        card.style.setProperty("--work-opacity", opacity.toFixed(3));
-        card.style.setProperty("--work-shadow", shadow.toFixed(3));
-        card.style.zIndex = String(Math.round((1 - absDistance) * 100));
-      });
-
-      ticking = false;
-    };
-
-    const requestDepthUpdate = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateVerticalDepth);
-        ticking = true;
-      }
-    };
-
-    worksMarquee.addEventListener("scroll", requestDepthUpdate, { passive: true });
-    window.addEventListener("resize", requestDepthUpdate);
-    window.addEventListener("load", requestDepthUpdate);
-    requestDepthUpdate();
-  } else {
-  const previousCards = originalCards.map((card) => card.cloneNode(true));
-  const nextCards = originalCards.map((card) => card.cloneNode(true));
-  let isDragging = false;
-  let isHovering = false;
-  let dragStarted = false;
-  let startX = 0;
-  let startScrollLeft = 0;
-  let lastTimestamp = 0;
-  let lastPointerX = 0;
-  let lastPointerTime = 0;
-  let inertiaVelocity = 0;
-  let pressedCard = null;
+  const track = worksMarquee.querySelector('.works-track');
+  track.querySelectorAll('.work-card[aria-hidden="true"]').forEach((card) => card.remove());
+  const cards = Array.from(track.querySelectorAll('.work-card'));
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobileQuery = window.matchMedia('(max-width: 760px)');
+  const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const dragThreshold = 6;
   let loopStart = 0;
   let loopWidth = 0;
   let loopBuffer = 0;
-  const autoSpeed = prefersReducedMotion ? 0 : 34;
-  const friction = 0.0045;
+  let drag = null;
+  let suppressClick = false;
+  let hovering = false;
+  let inView = true;
+  let windowActive = true;
+  let frame = 0;
+  let lastTime = null;
   let fractionalScroll = 0;
+  let resizeFrame = 0;
+  let measuredWidth = 0;
+  let measuredCardWidth = 0;
 
-  const advanceScroll = (distance) => {
+  worksMarquee.setAttribute('role', 'region');
+  worksMarquee.setAttribute('aria-live', 'off');
+  const modulo = (value, width) => ((value % width) + width) % width;
+  const keyboardFocused = () => worksMarquee.contains(document.activeElement)
+    && document.activeElement.matches(':focus-visible');
+  const canAnimate = () => loopWidth > 0 && !mobileQuery.matches && !motionQuery.matches
+    && !hovering && !keyboardFocused() && !drag && inView && windowActive && !document.hidden;
+
+  // Keep a spare viewport on either side. Wrapping before writing avoids the
+  // browser clamping a large drag delta at the physical ends of the track.
+  const wrappedPosition = (position) => {
+    if (!loopWidth) return position;
+    if (position < loopStart - loopBuffer || position >= loopStart + loopWidth + loopBuffer) {
+      return loopStart + modulo(position - loopStart, loopWidth);
+    }
+    return position;
+  };
+  const setPosition = (position) => { worksMarquee.scrollLeft = wrappedPosition(position); };
+  const normalize = () => {
+    const current = worksMarquee.scrollLeft;
+    const next = wrappedPosition(current);
+    if (Math.abs(next - current) > 0.5) worksMarquee.scrollLeft = next;
+  };
+  const advance = (distance) => {
     fractionalScroll += distance;
     const pixels = Math.trunc(fractionalScroll);
     if (pixels) {
-      worksMarquee.scrollLeft += pixels;
+      setPosition(worksMarquee.scrollLeft + pixels);
       fractionalScroll -= pixels;
     }
   };
-
-  const prepareClone = (card) => {
-    card.setAttribute("aria-hidden", "true");
-    card.setAttribute("tabindex", "-1");
-    card.querySelectorAll("img").forEach((image) => {
-      image.alt = "";
-    });
+  const animate = (time) => {
+    frame = 0;
+    if (!canAnimate()) { lastTime = null; return; }
+    if (lastTime !== null) advance(34 * Math.min(time - lastTime, 64) / 1000);
+    lastTime = time;
+    frame = window.requestAnimationFrame(animate);
   };
-
-  previousCards.forEach(prepareClone);
-  nextCards.forEach(prepareClone);
-
-  const previousFragment = document.createDocumentFragment();
-  const nextFragment = document.createDocumentFragment();
-
-  previousCards.forEach((card) => previousFragment.appendChild(card));
-  nextCards.forEach((card) => nextFragment.appendChild(card));
-  track.insertBefore(previousFragment, track.firstChild);
-  track.appendChild(nextFragment);
-
-  const updateLoopWidth = () => {
-    const firstOriginalCard = originalCards[0];
-    const firstNextCard = nextCards[0];
-
-    if (!firstOriginalCard || !firstNextCard) {
-      loopStart = 0;
-      loopWidth = track.scrollWidth / 3;
-      return;
-    }
-
-    loopStart = firstOriginalCard.offsetLeft;
-    loopWidth = firstNextCard.offsetLeft - loopStart;
-    loopBuffer = Math.min(worksMarquee.clientWidth * 0.55, loopWidth * 0.24);
-
-    if (worksMarquee.scrollLeft < loopStart || worksMarquee.scrollLeft >= loopStart + loopWidth) {
-      worksMarquee.scrollLeft = loopStart;
+  const syncAnimation = () => {
+    if (canAnimate()) {
+      if (!frame) frame = window.requestAnimationFrame(animate);
+    } else {
+      window.cancelAnimationFrame(frame);
+      frame = 0;
+      lastTime = null;
     }
   };
-
-  const normalizeScroll = () => {
-    if (!loopWidth) {
-      return;
-    }
-
-    if (worksMarquee.scrollLeft >= loopStart + loopWidth + loopBuffer) {
-      worksMarquee.scrollLeft -= loopWidth;
-    } else if (worksMarquee.scrollLeft < loopStart - loopBuffer) {
-      worksMarquee.scrollLeft += loopWidth;
-    }
+  const pointerInside = (event) => {
+    const rect = worksMarquee.getBoundingClientRect();
+    return event.clientX >= rect.left && event.clientX < rect.right
+      && event.clientY >= rect.top && event.clientY < rect.bottom;
   };
-
-  const normalizeDragScroll = () => {
-    if (!loopWidth) {
-      return;
-    }
-
-    if (worksMarquee.scrollLeft >= loopStart + loopWidth + loopBuffer) {
-      worksMarquee.scrollLeft -= loopWidth;
-      startScrollLeft -= loopWidth;
-    } else if (worksMarquee.scrollLeft < loopStart - loopBuffer) {
-      worksMarquee.scrollLeft += loopWidth;
-      startScrollLeft += loopWidth;
-    }
-  };
-
-  const animateWorks = (timestamp) => {
-    if (!lastTimestamp) {
-      lastTimestamp = timestamp;
-    }
-
-    const elapsed = timestamp - lastTimestamp;
-    lastTimestamp = timestamp;
-
-    if (!isDragging && Math.abs(inertiaVelocity) > 0.02) {
-      advanceScroll(inertiaVelocity * elapsed);
-      inertiaVelocity *= Math.exp(-friction * elapsed);
-      normalizeScroll();
-    } else if (!isDragging && !isHovering) {
-      inertiaVelocity = 0;
-      advanceScroll((autoSpeed * elapsed) / 1000);
-      normalizeScroll();
-    }
-
-    window.requestAnimationFrame(animateWorks);
-  };
-
-  updateLoopWidth();
-  window.addEventListener("resize", updateLoopWidth);
-  window.addEventListener("load", updateLoopWidth);
-  window.requestAnimationFrame(animateWorks);
-
-  worksMarquee.addEventListener("pointerdown", (event) => {
-    normalizeScroll();
-
-    isDragging = true;
+  const finishDrag = (event) => {
+    if (!drag || (event.pointerId !== undefined && event.pointerId !== drag.id)) return;
+    const ended = drag;
+    drag = null;
+    if (ended.moved) suppressClick = true;
+    worksMarquee.classList.remove('is-dragging');
+    if (worksMarquee.hasPointerCapture(ended.id)) worksMarquee.releasePointerCapture(ended.id);
+    if (event.clientX !== undefined) hovering = hoverQuery.matches && pointerInside(event);
     fractionalScroll = 0;
-    dragStarted = false;
-    pressedCard = event.target.closest(".work-card");
-    inertiaVelocity = 0;
-    startX = event.clientX;
-    startScrollLeft = worksMarquee.scrollLeft;
-    lastPointerX = event.clientX;
-    lastPointerTime = event.timeStamp;
-    worksMarquee.classList.add("is-dragging");
-    worksMarquee.setPointerCapture(event.pointerId);
-  });
-
-  worksMarquee.addEventListener("pointermove", (event) => {
-    if (!isDragging) {
-      return;
-    }
-
-    const moveX = event.clientX - startX;
-    const elapsed = event.timeStamp - lastPointerTime;
-
-    if (Math.abs(moveX) > 6) {
-      dragStarted = true;
-    }
-
-    worksMarquee.scrollLeft = startScrollLeft - moveX;
-
-    if (elapsed > 0) {
-      inertiaVelocity = -(event.clientX - lastPointerX) / elapsed;
-      lastPointerX = event.clientX;
-      lastPointerTime = event.timeStamp;
-    }
-
-    normalizeDragScroll();
-  });
-
-  const stopDragging = (event) => {
-    if (!isDragging) {
-      return;
-    }
-
-    isDragging = false;
-    worksMarquee.classList.remove("is-dragging");
-
-    if (worksMarquee.hasPointerCapture(event.pointerId)) {
-      worksMarquee.releasePointerCapture(event.pointerId);
-    }
+    syncAnimation();
   };
 
-  worksMarquee.addEventListener("pointerup", stopDragging);
-  worksMarquee.addEventListener("pointercancel", stopDragging);
-  worksMarquee.addEventListener("mouseenter", () => {
-    isHovering = true;
-  });
-  worksMarquee.addEventListener("mouseleave", () => {
-    isHovering = false;
-  });
-  worksMarquee.addEventListener("click", (event) => {
-    if (dragStarted) {
-      event.preventDefault();
-      dragStarted = false;
-      pressedCard = null;
-      return;
+  const makeClone = (card, index) => {
+    const clone = card.cloneNode(true);
+    clone.dataset.loopClone = String(index);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.setAttribute('tabindex', '-1');
+    clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
+    clone.querySelectorAll('img').forEach((image) => { image.alt = ''; });
+    clone.querySelectorAll('a, button, input, textarea, select, [tabindex]').forEach((node) => {
+      node.setAttribute('tabindex', '-1');
+    });
+    return clone;
+  };
+  const rebuild = () => {
+    resizeFrame = 0;
+    if (!cards.length) return;
+    const width = worksMarquee.clientWidth;
+    const cardWidth = cards[0].getBoundingClientRect().width;
+    if (width === measuredWidth && Math.abs(cardWidth - measuredCardWidth) < 0.01) return;
+    const phase = loopWidth ? modulo(worksMarquee.scrollLeft - loopStart, loopWidth) / loopWidth : 0;
+    if (drag) finishDrag({ pointerId: drag.id });
+    track.querySelectorAll('[data-loop-clone]').forEach((card) => card.remove());
+    const gap = parseFloat(window.getComputedStyle(track).columnGap) || 0;
+    const estimatedCycle = (cardWidth + gap) * cards.length;
+    const reserve = Math.min(width * 0.5, estimatedCycle * 0.25);
+    const copies = Math.max(1, Math.ceil((width + reserve) / estimatedCycle));
+    const previous = document.createDocumentFragment();
+    const next = document.createDocumentFragment();
+    let firstNext = null;
+    for (let group = 0; group < copies; group += 1) {
+      cards.forEach((card, index) => previous.appendChild(makeClone(card, index)));
+      cards.forEach((card, index) => {
+        const clone = makeClone(card, index);
+        if (!firstNext) firstNext = clone;
+        next.appendChild(clone);
+      });
     }
+    track.insertBefore(previous, cards[0]);
+    track.appendChild(next);
+    const originalLeft = cards[0].getBoundingClientRect().left;
+    loopStart = originalLeft - track.getBoundingClientRect().left;
+    loopWidth = firstNext.getBoundingClientRect().left - originalLeft;
+    loopBuffer = Math.min(width * 0.5, loopWidth * 0.25);
+    worksMarquee.scrollLeft = loopStart + phase * loopWidth;
+    measuredWidth = width;
+    measuredCardWidth = cardWidth;
+    fractionalScroll = 0;
+    lastTime = null;
+    syncAnimation();
+  };
+  const requestRebuild = () => {
+    if (!resizeFrame) resizeFrame = window.requestAnimationFrame(rebuild);
+  };
 
-    const clickedCard = event.target.closest(".work-card") || pressedCard;
-
-    if (clickedCard) {
-      event.preventDefault();
-      const youtubeWindow = window.open(clickedCard.href, "_blank");
-
-      if (youtubeWindow) {
-        youtubeWindow.opener = null;
-      }
-    }
-
-    pressedCard = null;
+  worksMarquee.addEventListener('pointerdown', (event) => {
+    suppressClick = false;
+    // Touch uses native scrolling, preserving horizontal swipe and page pan.
+    if (event.pointerType === 'touch' || !event.isPrimary || event.button !== 0) return;
+    if (drag) finishDrag({ pointerId: drag.id });
+    // Do not focus an aria-hidden duplicate, but keep its native link click.
+    if (event.target.closest('[data-loop-clone]')) event.preventDefault();
+    drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, lastX: event.clientX, moved: false };
+    fractionalScroll = 0;
+    syncAnimation();
   });
+  window.addEventListener('pointermove', (event) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    if (!(event.buttons & 1)) { finishDrag(event); return; }
+    if (!drag.moved) {
+      if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) <= dragThreshold) return;
+      drag.moved = true;
+      worksMarquee.classList.add('is-dragging');
+      worksMarquee.setPointerCapture(event.pointerId);
+    }
+    event.preventDefault();
+    // Incremental coordinates survive any number of left/right loop wraps.
+    advance(drag.lastX - event.clientX);
+    drag.lastX = event.clientX;
+  }, { passive: false });
+  window.addEventListener('pointerup', finishDrag, true);
+  window.addEventListener('pointercancel', finishDrag, true);
+  worksMarquee.addEventListener('lostpointercapture', finishDrag);
+  worksMarquee.addEventListener('dragstart', (event) => event.preventDefault());
+  worksMarquee.addEventListener('click', (event) => {
+    if (event.detail !== 0 && suppressClick) {
+      suppressClick = false;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+    // A click below the drag threshold follows the original anchor normally.
+  }, true);
+  worksMarquee.addEventListener('pointerenter', (event) => {
+    if (event.pointerType !== 'touch') { hovering = true; syncAnimation(); }
+  });
+  worksMarquee.addEventListener('pointerleave', (event) => {
+    if (event.pointerType !== 'touch') { hovering = false; syncAnimation(); }
+  });
+  worksMarquee.addEventListener('focusin', syncAnimation);
+  worksMarquee.addEventListener('focusout', () => window.requestAnimationFrame(syncAnimation));
+  worksMarquee.addEventListener('scroll', normalize, { passive: true });
+  document.addEventListener('visibilitychange', syncAnimation);
+  window.addEventListener('blur', () => {
+    windowActive = false;
+    if (drag) finishDrag({ pointerId: drag.id });
+    hovering = false;
+    syncAnimation();
+  });
+  window.addEventListener('focus', () => {
+    windowActive = true;
+    hovering = hoverQuery.matches && worksMarquee.matches(':hover');
+    syncAnimation();
+  });
+  window.addEventListener('resize', requestRebuild);
+  mobileQuery.addEventListener('change', () => { requestRebuild(); syncAnimation(); });
+  motionQuery.addEventListener('change', syncAnimation);
+  hoverQuery.addEventListener('change', () => {
+    hovering = hoverQuery.matches && worksMarquee.matches(':hover');
+    syncAnimation();
+  });
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; syncAnimation(); });
+    observer.observe(worksMarquee);
   }
+  if ('ResizeObserver' in window && cards.length) {
+    const observer = new ResizeObserver(requestRebuild);
+    observer.observe(worksMarquee);
+    observer.observe(cards[0]);
+  }
+  rebuild();
 }

@@ -5,21 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YuzinA Studio | 歌ってみたMIX依頼受付</title>
   <meta name="description" content="YuzinA Studioは、歌ってみたMIX依頼受付サイトです。MIX歴11年、担当作品2,000本以上の経験をもとに、聴きやすい投稿用音源へ仕上げます。">
+  <link rel="canonical" href="https://kingkazuma1015.github.io/yuzin_A_studio/">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kingkazuma1015.github.io/yuzin_A_studio/">
   <meta property="og:site_name" content="YuzinA Studio">
   <meta property="og:title" content="YuzinA Studio | 歌ってみたMIX依頼受付">
   <meta property="og:description" content="MIX歴11年、担当作品2,000本以上。歌声の良さを残して、聴きやすいMIXへ仕上げます。">
-  <meta property="og:image" content="assets/hero-studio-illustration.png">
+  <meta property="og:image" content="https://kingkazuma1015.github.io/yuzin_A_studio/assets/social-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="YuzinA Studio / 歌ってみたMIX">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="YuzinA Studio | 歌ってみたMIX依頼受付">
   <meta name="twitter:description" content="MIX歴11年、担当作品2,000本以上。歌声の良さを残して、聴きやすいMIXへ仕上げます。">
-  <meta name="twitter:image" content="assets/hero-studio-illustration.png">
+  <meta name="twitter:image" content="https://kingkazuma1015.github.io/yuzin_A_studio/assets/social-card.png">
+  <meta name="twitter:image:alt" content="YuzinA Studio / 歌ってみたMIX">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="site-header">
     <a class="logo" href="#top" aria-label="YuzinA Studio トップへ">YuzinA Studio</a>
-    <button class="menu-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="global-nav">
+    <button class="menu-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="global-nav" hidden>
       <span></span>
       <span></span>
       <span></span>
@@ -221,7 +227,7 @@
         </div>
         <div class="price-row" role="row">
           <div role="cell">スピード納品</div>
-          <div role="cell">¥15,000</div>
+          <div role="cell">¥15,000（MIX込み）</div>
           <div role="cell">お支払い確認後、1日で納品します。</div>
         </div>
         <div class="price-row" role="row">
@@ -247,7 +253,7 @@
         <article>
           <span>01</span>
           <h3>納期目安</h3>
-          <p>通常納期は5〜7日程度です。スピード納品は、お支払い確認後1日で納品します。</p>
+          <p>通常は、素材と入金の両方が揃ってから、初稿をお送りするまで5〜7日程度が目安です。スピード納品は15,000円（MIX込み）で、お支払い確認後1日で納品します。</p>
         </article>
         <article>
           <span>02</span>
@@ -282,14 +288,14 @@
           <span>02</span>
           <div>
             <h3>データ確認・お見積もり</h3>
-            <p>ボーカル音源、参考音源、歌詞を確認して金額と納期をご案内します。</p>
+            <p>ボーカル音源、参考音源、歌詞を確認して金額と納期をご案内します。スピード納品は15,000円（MIX込み）の総額です。</p>
           </div>
         </li>
         <li>
           <span>03</span>
           <div>
             <h3>MIX制作</h3>
-            <p>補正、MIX、マスタリングを進め、確認用音源をお送りします。</p>
+            <p>補正、MIX、マスタリングを進め、確認用音源をお送りします。通常は、素材と入金の両方が揃ってから初稿まで5〜7日程度が目安です。</p>
           </div>
         </li>
         <li>
@@ -316,7 +322,11 @@
         </details>
         <details>
           <summary>納期はどのくらいですか？</summary>
-          <p>通常は5〜7日程度を目安にしています。お急ぎの場合はスピード納品をご利用ください。</p>
+          <p>通常は、素材と入金の両方が揃ってから、初稿をお送りするまで5〜7日程度が目安です。お急ぎの場合は、スピード納品15,000円（MIX込み）をご利用ください。</p>
+        </details>
+        <details>
+          <summary>スピード納品15,000円には、MIX料金も含まれますか？</summary>
+          <p>はい。スピード納品は15,000円（MIX込み）の総額です。料金は税込です。</p>
         </details>
         <details>
           <summary>修正はお願いできますか？</summary>
@@ -338,17 +348,18 @@
       </p>
       <div class="contact-buttons">
         <a class="button" href="https://x.com/yuzin_A_" target="_blank" rel="noopener noreferrer">X / Twitter</a>
-        <button class="button secondary" type="button" data-open-mail>メール</button>
+        <button class="button secondary" type="button" data-open-mail aria-haspopup="dialog" aria-controls="mail-modal" hidden>メール</button>
       </div>
+      <p>メール：<a href="mailto:yuzinamix@gmail.com">yuzinamix@gmail.com</a></p>
+      <p class="contact-note">メールアプリが開かない場合は、上記のアドレスを宛先にして、ご利用のメールサービスからお送りください。</p>
     </section>
   </main>
 
-  <div class="mail-modal" id="mail-modal" aria-hidden="true">
-    <div class="mail-modal-backdrop" data-close-mail></div>
-    <div class="mail-dialog" role="dialog" aria-modal="true" aria-labelledby="mail-title">
+  <dialog class="mail-dialog" id="mail-modal" aria-labelledby="mail-title" aria-describedby="mail-help">
       <button class="mail-close" type="button" aria-label="閉じる" data-close-mail>×</button>
       <p class="section-label">Mail</p>
       <h2 id="mail-title">メールで相談する</h2>
+      <p id="mail-help">この画面から直接メールは送信されません。メールアプリを開いた後、宛先と内容を確認して送信してください。アプリが開かない場合は、画面下のお問い合わせ先へ直接お送りください。</p>
       <form class="mail-form">
         <label>
           宛先
@@ -356,7 +367,7 @@
         </label>
         <label>
           件名
-          <input type="text" name="subject" value="MIX依頼の相談">
+          <input type="text" name="subject" value="MIX依頼の相談" autofocus>
         </label>
         <label>
           本文
@@ -370,11 +381,10 @@
         </label>
         <button class="button" type="submit">メールアプリを開く</button>
       </form>
-    </div>
-  </div>
+  </dialog>
 
   <footer class="site-footer">
-    <p>&copy; <span id="year"></span> YuzinA Studio. All rights reserved.</p>
+    <p>&copy; <span id="year">2026</span> YuzinA Studio. All rights reserved.</p>
   </footer>
 
   <script src="script.js"></script>
