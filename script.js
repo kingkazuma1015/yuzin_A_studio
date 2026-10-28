@@ -1,128 +1,184 @@
-const year = document.querySelector('#year');
-const menuToggle = document.querySelector('.menu-toggle');
-const nav = document.querySelector('#global-nav');
-const navLinks = document.querySelectorAll('.nav a');
-const worksMarquee = document.querySelector('.works-marquee');
-const revealSections = document.querySelectorAll('.reveal-section');
-const mailModal = document.querySelector('#mail-modal');
-const openMailButton = document.querySelector('[data-open-mail]');
-const closeMailButtons = document.querySelectorAll('[data-close-mail]');
-const mailForm = document.querySelector('.mail-form');
-
+/* YuzinA Studio — progressive enhancement. No analytics, feeds or form submission. */
+(() => {
+'use strict';
+const $ = (selector, context = document) => context.querySelector(selector);
+const $$ = (selector, context = document) => Array.from(context.querySelectorAll(selector));
+const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const mobile = window.matchMedia('(max-width: 760px)');
+const year = $('#year');
 if (year) year.textContent = new Date().getFullYear();
+document.documentElement.classList.add('js-ready');
 
-const closeMenu = () => {
+// Navigation works as ordinary anchors before enhancement and with JavaScript disabled.
+const menuToggle = $('.menu-toggle');
+const nav = $('#global-nav');
+const header = $('.site-header');
+const closeMenu = (restoreFocus = false) => {
   nav.classList.remove('is-open');
   menuToggle.setAttribute('aria-expanded', 'false');
   menuToggle.setAttribute('aria-label', 'メニューを開く');
+  if (restoreFocus) menuToggle.focus({ preventScroll: true });
 };
 menuToggle.addEventListener('click', () => {
-  const isOpen = nav.classList.toggle('is-open');
-  menuToggle.setAttribute('aria-expanded', String(isOpen));
-  menuToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+  const open = nav.classList.toggle('is-open');
+  menuToggle.setAttribute('aria-expanded', String(open));
+  menuToggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
 });
-navLinks.forEach((link) => link.addEventListener('click', closeMenu));
-const handleMenuEscape = (event) => {
-  if (event.key === 'Escape') { closeMenu(); menuToggle.focus(); }
-};
-nav.addEventListener('keydown', handleMenuEscape);
-menuToggle.addEventListener('keydown', handleMenuEscape);
-window.matchMedia('(max-width: 760px)').addEventListener('change', closeMenu);
+$$('a', nav).forEach(link => link.addEventListener('click', () => closeMenu()));
+header.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && nav.classList.contains('is-open')) closeMenu(true);
+});
+document.addEventListener('pointerdown', event => {
+  if (!header.contains(event.target)) closeMenu();
+});
+header.addEventListener('focusout', event => {
+  if (event.relatedTarget && !header.contains(event.relatedTarget)) closeMenu();
+});
+mobile.addEventListener('change', () => closeMenu());
 nav.classList.add('is-collapsible');
-menuToggle.closest('.site-header').classList.add('has-menu');
+header.classList.add('has-menu');
 menuToggle.hidden = false;
 
-// Content is visible without JavaScript. Only opt into reveal animations after
-// the observer is available, and reveal everything when motion is reduced.
-const revealMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-if (revealSections.length && 'IntersectionObserver' in window && !revealMotion.matches) {
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        revealObserver.unobserve(entry.target);
-      }
+// Reveal once. Content is never initially hidden without an observer or in reduced motion.
+const reveals = $$('.reveal-section');
+if ('IntersectionObserver' in window && !motion.matches) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
     });
-  }, { threshold: 0.16 });
-  revealSections.forEach((section) => {
+  }, { threshold: 0.1, rootMargin: '0px 0px -24px 0px' });
+  reveals.forEach((section, index) => {
     section.classList.add('reveal-ready');
-    revealObserver.observe(section);
+    section.style.transitionDelay = `${index % 3 * 35}ms`;
+    observer.observe(section);
   });
-  revealMotion.addEventListener('change', () => {
-    if (revealMotion.matches) {
-      revealSections.forEach((section) => section.classList.add('is-visible'));
-      revealObserver.disconnect();
-    }
+  motion.addEventListener('change', () => {
+    if (!motion.matches) return;
+    reveals.forEach(section => section.classList.add('is-visible'));
+    observer.disconnect();
   });
 }
 
-if (mailModal && openMailButton && mailForm && typeof mailModal.showModal === 'function') {
-  let previousOverflow = '';
-  let scrollLocked = false;
-  const restoreMailState = () => {
-    if (!scrollLocked) return;
-    document.body.style.overflow = previousOverflow;
-    scrollLocked = false;
-    openMailButton.focus({ preventScroll: true });
-  };
-  const closeMailModal = () => {
-    if (!mailModal.open) return;
-    mailModal.close();
-    restoreMailState();
-  };
-  openMailButton.addEventListener('click', () => {
-    if (mailModal.open) return;
-    restoreMailState();
-    previousOverflow = document.body.style.overflow;
-    mailModal.showModal();
-    document.body.style.overflow = 'hidden';
-    scrollLocked = true;
-    const subjectInput = mailForm.querySelector('input[name="subject"]');
-    subjectInput.focus({ preventScroll: true });
-    subjectInput.setSelectionRange(subjectInput.value.length, subjectInput.value.length);
-    mailModal.scrollTop = 0;
+// Scroll-bound motion uses one requested frame per scroll, never a continuous render loop.
+const hero = $('.hero');
+const pageProgress = $('.page-progress');
+const navTargets = $$('.nav a').map(link => ({ link, target: $(link.getAttribute('href')) })).filter(item => item.target);
+let scrollFrame = 0;
+const paintScroll = () => {
+  scrollFrame = 0;
+  const y = window.scrollY || 0;
+  header.classList.toggle('is-pinned', y > 100);
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  pageProgress.style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
+  hero.style.setProperty('--hero-shift', `${motion.matches || mobile.matches ? 0 : Math.min(y * .1, 65)}px`);
+  hero.style.setProperty('--signal-turn', `${motion.matches || mobile.matches ? 0 : Math.min(y * .035, 24)}deg`);
+  let active = null;
+  let nearestTop = -Infinity;
+  navTargets.forEach(item => {
+    const top = item.target.getBoundingClientRect().top;
+    if (top <= 150 && top > nearestTop) { active = item; nearestTop = top; }
   });
-  closeMailButtons.forEach((button) => button.addEventListener('click', closeMailModal));
-  mailModal.addEventListener('keydown', (event) => {
+  navTargets.forEach(item => {
+    if (item === active) item.link.setAttribute('aria-current', 'location');
+    else item.link.removeAttribute('aria-current');
+  });
+};
+const requestScrollPaint = () => { if (!scrollFrame) scrollFrame = window.requestAnimationFrame(paintScroll); };
+window.addEventListener('scroll', requestScrollPaint, { passive: true });
+window.addEventListener('resize', requestScrollPaint);
+motion.addEventListener('change', requestScrollPaint);
+paintScroll();
+
+// Each native dialog owns its focus/overflow state and cleans up on every dismissal path.
+const setupDialog = (dialog, closeSelector, onClose = () => {}) => {
+  if (!dialog || typeof dialog.showModal !== 'function') return null;
+  let opener = null;
+  let overflow = '';
+  let locked = false;
+  const notify = () => document.dispatchEvent(new Event('studio:dialogchange'));
+  const restore = () => {
+    if (!locked) return;
+    document.body.style.overflow = overflow;
+    locked = false;
+    onClose();
+    if (opener?.isConnected) opener.focus({ preventScroll: true });
+    opener = null;
+    notify();
+  };
+  const close = () => {
+    if (!dialog.open) return;
+    dialog.close();
+    restore();
+  };
+  $$(closeSelector, dialog).forEach(button => button.addEventListener('click', close));
+  dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
+  dialog.addEventListener('close', () => { if (!dialog.open) restore(); });
+  dialog.addEventListener('click', event => {
+    const rect = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) close();
+  });
+  dialog.addEventListener('keydown', event => {
     if (event.key !== 'Tab') return;
-    const fields = Array.from(mailModal.querySelectorAll('a[href], button, input, textarea, select, [tabindex]'))
-      .filter((field) => !field.disabled && field.tabIndex >= 0 && field.getClientRects().length);
-    if (!fields.length) { event.preventDefault(); return; }
-    const first = fields[0];
-    const last = fields[fields.length - 1];
-    const active = document.activeElement;
-    if (event.shiftKey && (active === first || !fields.includes(active))) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && (active === last || !fields.includes(active))) {
-      event.preventDefault();
-      first.focus();
+    const fields = $$('a[href], button, input, textarea, select, [tabindex]', dialog)
+      .filter(field => !field.disabled && field.tabIndex >= 0 && field.getClientRects().length);
+    const first = fields[0], last = fields[fields.length - 1];
+    if (!first) { event.preventDefault(); return; }
+    if (event.shiftKey && (document.activeElement === first || !fields.includes(document.activeElement))) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !fields.includes(document.activeElement))) {
+      event.preventDefault(); first.focus();
     }
   });
-  mailModal.addEventListener('cancel', (event) => {
+  return {
+    open(trigger, initialFocus) {
+      if (dialog.open) return;
+      opener = trigger;
+      overflow = document.body.style.overflow;
+      dialog.showModal();
+      document.body.style.overflow = 'hidden';
+      locked = true;
+      dialog.scrollTop = 0;
+      initialFocus?.focus({ preventScroll: true });
+      notify();
+    }, close
+  };
+};
+const mailModal = $('#mail-modal');
+const openMailButton = $('[data-open-mail]');
+const mailForm = $('.mail-form');
+const mailStatus = $('.mail-status');
+const mail = setupDialog(mailModal, '[data-close-mail]');
+if (mail && openMailButton && mailForm) {
+  const field = name => mailForm.elements.namedItem(name);
+  openMailButton.addEventListener('click', () => {
+    mailStatus.textContent = '';
+    mail.open(openMailButton, field('subject'));
+    field('subject').setSelectionRange(field('subject').value.length, field('subject').value.length);
+  });
+  $$('[data-copy-mail]', mailModal).forEach(button => button.addEventListener('click', async () => {
+    const input = field(button.dataset.copyMail);
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(input.value);
+      mailStatus.textContent = `${button.textContent.replace('をコピー', '')}をコピーしました。`;
+    } catch {
+      input.focus(); input.select();
+      mailStatus.textContent = '自動コピーが使えません。選択された内容を手動でコピーしてください。';
+    }
+  }));
+  mailForm.addEventListener('submit', event => {
     event.preventDefault();
-    closeMailModal();
-  });
-  mailModal.addEventListener('close', () => {
-    if (!mailModal.open) restoreMailState();
-  });
-  // Native modal behavior makes the background inert; explicit Tab wrapping
-  // above keeps focus in the dialog. Native Escape and closed-state handling remain.
-  mailModal.addEventListener('click', (event) => {
-    const rect = mailModal.getBoundingClientRect();
-    if (event.target === mailModal && (event.clientX < rect.left || event.clientX > rect.right
-      || event.clientY < rect.top || event.clientY > rect.bottom)) closeMailModal();
-  });
-  mailForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const formData = new FormData(mailForm);
-    const subject = encodeURIComponent(formData.get('subject') || '');
-    const body = encodeURIComponent(String(formData.get('body') || '').replace(/\r?\n/g, '\r\n'));
-    window.location.href = `mailto:${formData.get('to')}?subject=${subject}&body=${body}`;
+    const subject = encodeURIComponent(field('subject').value || '');
+    const body = encodeURIComponent((field('body').value || '').replace(/\r?\n/g, '\r\n'));
+    // The recipient is fixed; visitors only edit their subject/body, never submit to a server.
+    window.location.href = `mailto:yuzinamix@gmail.com?subject=${subject}&body=${body}`;
   });
   openMailButton.hidden = false;
 }
 
+const worksMarquee = $('.works-marquee');
 if (worksMarquee) {
   const track = worksMarquee.querySelector('.works-track');
   track.querySelectorAll('.work-card[aria-hidden="true"]').forEach((card) => card.remove());
@@ -146,12 +202,28 @@ if (worksMarquee) {
   let measuredWidth = 0;
   let measuredCardWidth = 0;
 
+  const controls = document.querySelector('.works-tools');
+  if (controls) controls.hidden = false;
+  const step = (direction) => {
+    const gap = parseFloat(window.getComputedStyle(track).columnGap) || 0;
+    const distance = (cards[0].getBoundingClientRect().width + gap) * direction;
+    setPosition(worksMarquee.scrollLeft + distance);
+    updateCounter();
+  };
+  document.querySelector('[data-works-prev]')?.addEventListener('click', () => step(-1));
+  document.querySelector('[data-works-next]')?.addEventListener('click', () => step(1));
+  const updateCounter = () => {
+    if (!loopWidth) return;
+    const index = Math.round(modulo(worksMarquee.scrollLeft - loopStart, loopWidth) / loopWidth * cards.length) % cards.length;
+    const counter = document.querySelector('[data-work-index]');
+    if (counter) counter.textContent = String(index + 1).padStart(2, '0');
+  };
   worksMarquee.setAttribute('role', 'region');
   worksMarquee.setAttribute('aria-live', 'off');
   const modulo = (value, width) => ((value % width) + width) % width;
   const keyboardFocused = () => worksMarquee.contains(document.activeElement)
     && document.activeElement.matches(':focus-visible');
-  const canAnimate = () => loopWidth > 0 && !mobileQuery.matches && !motionQuery.matches
+  const canAnimate = () => !document.querySelector('dialog[open]') && loopWidth > 0 && hoverQuery.matches && !mobileQuery.matches && !motionQuery.matches
     && !hovering && !keyboardFocused() && !drag && inView && windowActive && !document.hidden;
 
   // Keep a spare viewport on either side. Wrapping before writing avoids the
@@ -309,8 +381,9 @@ if (worksMarquee) {
   });
   worksMarquee.addEventListener('focusin', syncAnimation);
   worksMarquee.addEventListener('focusout', () => window.requestAnimationFrame(syncAnimation));
-  worksMarquee.addEventListener('scroll', normalize, { passive: true });
+  worksMarquee.addEventListener('scroll', () => { normalize(); updateCounter(); }, { passive: true });
   document.addEventListener('visibilitychange', syncAnimation);
+  document.addEventListener('studio:dialogchange', syncAnimation);
   window.addEventListener('blur', () => {
     windowActive = false;
     if (drag) finishDrag({ pointerId: drag.id });
@@ -339,4 +412,33 @@ if (worksMarquee) {
     observer.observe(cards[0]);
   }
   rebuild();
+  updateCounter();
 }
+
+// Delegate after carousel drag suppression. Ordinary/modified links retain native fallbacks.
+const videoModal = $('#video-modal');
+const videoFrame = $('.video-frame');
+const video = setupDialog(videoModal, '[data-close-video]', () => videoFrame.replaceChildren());
+if (video && worksMarquee) {
+  worksMarquee.addEventListener('click', event => {
+    const card = event.target.closest('.work-card');
+    if (!card || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button > 0) return;
+    const source = new URL(card.href);
+    const id = source.searchParams.get('v');
+    if (!/^[a-zA-Z0-9_-]{11}$/.test(id || '')) return;
+    event.preventDefault();
+    const title = $('img', card)?.alt.replace(' のYouTubeサムネイル', '') || card.textContent.trim();
+    $('#video-title').textContent = title;
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=0&rel=0`;
+    iframe.title = title;
+    iframe.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    iframe.setAttribute('allowfullscreen', '');
+    videoFrame.replaceChildren(iframe);
+    $('.video-external').href = card.href;
+    const original = $$('.work-card', worksMarquee).find(item => !item.hasAttribute('data-loop-clone') && item.href === card.href);
+    video.open(original || card, $('[data-close-video]'));
+  });
+}
+})();
