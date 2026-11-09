@@ -2,6 +2,7 @@
 from pathlib import Path
 import re
 import struct
+import json
 from urllib.parse import urlparse
 from html_document import Document
 
@@ -47,14 +48,16 @@ def check():
             assert attrs.get('type') in {'button', 'submit'}, f'Explicit button type required: {attrs}'
     canonical = [n['attrs'].get('href') for n in nodes
                  if n['tag'] == 'link' and n['attrs'].get('rel') == 'canonical']
-    assert canonical == ['https://kingkazuma1015.github.io/yuzin_A_studio/']
+    published = json.loads((ROOT / 'tests/published-baseline.json').read_text())
+    assert canonical == [published['canonical']]
     skip = next(n for n in nodes if 'skip-link' in n['attrs'].get('class', '').split())
     assert skip['attrs']['href'].startswith('#')
     assert '®' not in html, 'No invented registered-trademark claim'
     png = (ROOT / 'assets/social-card.png').read_bytes()
     assert png[:8] == b'\x89PNG\r\n\x1a\n' and struct.unpack('>II', png[16:24]) == (1200, 630)
 
-    css = (ROOT / 'style.css').read_text()
+    css = '\n'.join((ROOT / name).read_text() for name in
+                    ['style.css', 'reconstruction.css', 'selected-visual.css', 'typography.css', 'motion.css'])
     assert 'prefers-reduced-motion' in css, 'Reduced-motion CSS required'
     assert ':focus-visible' in css, 'Keyboard focus styling required'
     assert 'overflow-x:auto' in css.replace(' ', ''), 'Native portfolio horizontal scrolling required'
@@ -70,9 +73,11 @@ def check():
     assert depth == 0, 'Unbalanced CSS blocks'
     # Deliberately generous budgets constrain accidental bundles/data URIs while
     # allowing a custom vector hero. Browser performance remains separate QA.
-    sizes = {name: (ROOT / name).stat().st_size for name in ['index.html', 'style.css', 'script.js']}
+    sizes = {name: (ROOT / name).stat().st_size for name in
+             ['index.html', 'style.css', 'script.js', 'motion.css', 'motion.js']}
     assert sizes['index.html'] < 350_000, sizes
     assert sizes['style.css'] < 100_000 and sizes['script.js'] < 100_000, sizes
+    assert sizes['motion.css'] < 10_000 and sizes['motion.js'] < 20_000, sizes
     print(f'PASS: strict HTML nesting / IDs / ARIA / local assets; semantic landmarks; '
           f'FAQ / dialogs; lazy reserved imagery; keyboard / reduced-motion CSS; source budgets {sizes}')
     return parser.root

@@ -1,7 +1,7 @@
-"""Offline, immutable-source content checks. Never contacts a remote service.
+"""Offline preservation checks against the public custom-domain snapshot.
 
-The fixture was extracted before editing from main 3a21d94. Layout, decorative
-elements and whitespace may change; original copy, destinations and assets may not.
+published-baseline.json was captured before motion editing on 2026-11-09.
+The older content-baseline.json retains historical links, work order and assets.
 """
 from pathlib import Path
 from html.parser import HTMLParser
@@ -12,6 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = json.loads((ROOT / 'tests/content-baseline.json').read_text())
+PUBLISHED = json.loads((ROOT / 'tests/published-baseline.json').read_text())
 
 
 def compact(text):
@@ -48,7 +49,7 @@ def check():
     text = compact(''.join(p.fragments))
     # Clone removal is deliberate: compare unique original copy, not presentation
     # counts. The close glyph and year are UI values, not business-copy contracts.
-    original = [s for s in FIXTURE['original_text'] if s not in {'×', '2026', '©'}]
+    original = [s for s in PUBLISHED['published_text'] if s not in {'×', '2026', '©'}]
     missing = [s for s in original if compact(s) not in text]
     assert not missing, 'Original copy changed or missing:\n' + '\n'.join(missing)
 
@@ -71,8 +72,17 @@ def check():
         actual = hashlib.sha256((ROOT / filename).read_bytes()).hexdigest()
         assert actual == expected, f'Original source asset changed: {filename}'
     meta = [a for tag, a in p.elements if tag == 'meta']
-    for expected in FIXTURE['meta']:
+    for expected in PUBLISHED['meta']:
         assert expected in meta, f'Original metadata changed: {expected}'
+    for filename, expected in PUBLISHED['asset_sha256'].items():
+        assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == expected, filename
+    for source in PUBLISHED['source_files']:
+        data = (ROOT / source['path']).read_bytes()
+        if source['path'] == 'index.html':
+            data = data.replace(b'  <link rel="stylesheet" href="motion.css">\n', b'')
+            data = data.replace(b'<script src="motion.js" defer></script>\n', b'')
+        assert hashlib.sha256(data).hexdigest() == source['sha256'], \
+            f'Published layout, styles or original interaction code changed: {source["path"]}'
 
     # An explicit noJS contact path is independent of a generated mail dialog.
     assert any(a.get('href') == 'mailto:yuzinamix@gmail.com' and 'hidden' not in a
@@ -80,15 +90,15 @@ def check():
     assert any(a.get('href') == 'https://x.com/yuzin_A_' for a in anchors)
     for tag, attrs in p.elements:
         if tag == 'script':
-            assert attrs.get('src') in {None, 'script.js'}, 'Unreviewed external script'
-    active = html + '\n' + script
+            assert attrs.get('src') in {None, 'script.js', 'motion.js'}, 'Unreviewed external script'
+    active = html + '\n' + script + '\n' + (ROOT / 'motion.js').read_text()
     for forbidden in [r'docs\.google\.com/spreadsheets', r'sheets\.googleapis\.com',
                       r'/gviz/', r'\bXMLHttpRequest\b', r'\bfetch\s*\(',
                       r'\bWebSocket\s*\(', r'\bEventSource\s*\(']:
         assert not re.search(forbidden, active, re.I), f'Unexpected data/network feed: {forbidden}'
     print(f'PASS: {len(original)} unique original text fragments; all original destinations; '
           'nine ordered works including KING / 東京駅; source image descriptions; '
-          'three byte-identical original assets; metadata; static contact fallback; no data feed')
+          'original and published assets; current published copy/metadata; static contact fallback; no data feed')
 
 
 if __name__ == '__main__':

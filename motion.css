@@ -1,0 +1,54 @@
+/* Motion layer for the published neutral studio design. Layout and type stay intact. */
+.studio-motion .hero-copy h1{animation:none}
+.studio-motion .hero::before{
+  transform:translate3d(var(--photo-x,0px),var(--photo-y,0px),0) scale(1.035);
+  transition:transform 1.2s var(--ease);
+  animation:studio-breathe 18s ease-in-out infinite alternate;
+  animation-play-state:paused;
+}
+.studio-motion .hero.motion-in-view::before{animation-play-state:running}
+@keyframes studio-breathe{from{scale:1}to{scale:1.025}}
+.studio-motion .service-signal i{
+  animation:studio-meter 1.65s ease-in-out infinite alternate;
+  animation-delay:calc(var(--bar) * -137ms);
+  animation-play-state:paused;
+}
+.studio-motion .service-section.motion-in-view .service-signal i{animation-play-state:running}
+@keyframes studio-meter{0%{transform:scaleY(.35)}45%{transform:scaleY(.92)}100%{transform:scaleY(.55)}}
+.studio-motion .motion-rule{position:relative}
+.studio-motion .motion-rule::after{
+  content:"";position:absolute;bottom:-1px;left:0;width:100%;height:1px;
+  background:currentColor;opacity:.35;transform:scaleX(0);transform-origin:left;
+  transition:transform 1.15s var(--ease);pointer-events:none;
+}
+.studio-motion .motion-rule.motion-entered::after{transform:scaleX(1)}
+.about-figures strong .motion-figure{display:inline-block;font:inherit;letter-spacing:inherit;margin:0;font-variant-numeric:tabular-nums}
+.studio-motion .flow-list li:not(:last-child)::after{
+  content:"";position:absolute;left:21px;top:44px;bottom:0;width:1px;
+  background:var(--ink);transform:scaleY(var(--step-progress,0));transform-origin:top;pointer-events:none;
+}
+.studio-motion .flow-list li>span{transition:background .45s,color .45s,border-color .45s}
+.studio-motion .flow-list li.motion-step-active>span{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.studio-motion .button,.studio-motion .circle-control,.studio-motion .nav-contact{
+  translate:var(--button-x,0px) var(--button-y,0px);
+  transition:translate .55s var(--ease),background .3s,color .3s,transform .35s var(--ease),border-color .3s;
+}
+@media(hover:hover) and (pointer:fine){
+  .studio-motion .button:hover,.studio-motion .nav-contact:hover{box-shadow:0 8px 20px #52525214}
+  .studio-motion .footer-logo span{transition:transform .5s var(--ease)}
+  .studio-motion .footer-logo:hover span{transform:translateY(-5px)}
+}
+.studio-motion.motion-paused .hero::before,.studio-motion.motion-paused .service-signal i{animation-play-state:paused}
+@media(max-width:760px){
+  .studio-motion .hero::before{transform:translate3d(0,var(--photo-y,0px),0) scale(1.035)}
+  .studio-motion .flow-list li:not(:last-child)::after{left:18px;top:37px}
+}
+@media(prefers-reduced-motion:reduce){
+  .studio-motion .hero::before{animation:none;transform:none;scale:1}
+  .studio-motion .button,.studio-motion .circle-control,.studio-motion .nav-contact{translate:none}
+  .studio-motion .motion-rule::after,.studio-motion .flow-list li::after{display:none}
+}
+@media print{
+  .studio-motion .motion-rule::after,.studio-motion .flow-list li::after{display:none}
+  .studio-motion .flow-list li>span{background:white;color:black}
+}

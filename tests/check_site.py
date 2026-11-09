@@ -14,6 +14,9 @@ root = Path(__file__).resolve().parents[1]
 check_content()
 tree = check_structure()
 subprocess.run(['node', '--check', str(root / 'script.js')], check=True)
+subprocess.run(['node', '--check', str(root / 'motion.js')], check=True)
 subprocess.run(['node', str(root / 'tests/check_interactions.cjs')],
+               input=json.dumps(tree, ensure_ascii=False), text=True, check=True)
+subprocess.run(['node', str(root / 'tests/check_motion.cjs')],
                input=json.dumps(tree, ensure_ascii=False), text=True, check=True)
 print('PASS: all offline checks. Browser rendering, native touch, embeds and actual clipboard/mail clients require separate QA.')
