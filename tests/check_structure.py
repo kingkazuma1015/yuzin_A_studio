@@ -21,6 +21,16 @@ def check():
     assert len([n for n in nodes if n['tag'] == 'main']) == 1, 'Exactly one main landmark'
     assert len([n for n in nodes if n['tag'] == 'details']) == 6, 'Six native FAQ accordions'
     assert len([n for n in nodes if n['tag'] == 'dialog']) == 2, 'Mail and video dialogs'
+    credits = json.loads((ROOT / 'tests/works-metadata.json').read_text())
+    cards = [n for n in nodes if 'work-card' in n['attrs'].get('class', '').split()]
+    assert len(cards) == len(credits) == 9
+    def descendants(node):
+        return [node] + [child for n in node['children'] for child in descendants(n)]
+    for card, credit in zip(cards, credits):
+        assert card['attrs']['href'] == credit['source_url'], 'Credit attached to wrong video'
+        for field, cls in [('title', 'work-title'), ('vocal', 'work-vocal'), ('credit', 'work-credit')]:
+            matches = [n for n in descendants(card) if cls in n['attrs'].get('class', '').split()]
+            assert len(matches) == 1 and matches[0]['text'].strip() == credit[field], (credit['video_id'], field)
     for node in nodes:
         attrs = node['attrs']
         for key in ['aria-controls', 'aria-labelledby', 'aria-describedby']:
@@ -57,7 +67,7 @@ def check():
     assert png[:8] == b'\x89PNG\r\n\x1a\n' and struct.unpack('>II', png[16:24]) == (1200, 630)
 
     css = '\n'.join((ROOT / name).read_text() for name in
-                    ['style.css', 'reconstruction.css', 'selected-visual.css', 'typography.css', 'motion.css'])
+                    ['style.css', 'reconstruction.css', 'selected-visual.css', 'typography.css', 'motion.css', 'works.css'])
     assert 'prefers-reduced-motion' in css, 'Reduced-motion CSS required'
     assert ':focus-visible' in css, 'Keyboard focus styling required'
     assert 'overflow-x:auto' in css.replace(' ', ''), 'Native portfolio horizontal scrolling required'

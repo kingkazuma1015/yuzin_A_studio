@@ -1,0 +1,12 @@
+/* Work credits sit below the existing numbered captions, in the studio palette. */
+.work-details{display:grid;gap:5px;margin-top:5px;padding-bottom:14px;min-width:0}
+.work-title{display:block;margin-bottom:6px;font-size:clamp(17px,1.4vw,21px);font-weight:500;line-height:1.6;letter-spacing:-.02em;color:var(--ink);overflow-wrap:anywhere}
+.work-info{display:grid;grid-template-columns:3.5em minmax(0,1fr);gap:12px;align-items:baseline;font-size:12px;line-height:1.8;color:var(--muted)}
+.work-info-label{font-size:10px;letter-spacing:.04em;color:var(--muted)}
+.work-vocal,.work-credit{overflow-wrap:anywhere}
+@media(max-width:760px){
+  .work-details{gap:4px;margin-top:3px;padding-bottom:10px}
+  .work-title{font-size:17px;margin-bottom:5px}
+  .work-info{font-size:11px;gap:9px}
+  .work-info-label{font-size:10px}
+}

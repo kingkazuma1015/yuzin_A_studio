@@ -80,7 +80,12 @@ def check():
         data = (ROOT / source['path']).read_bytes()
         if source['path'] == 'index.html':
             data = data.replace(b'  <link rel="stylesheet" href="motion.css">\n', b'')
+            data = data.replace(b'  <link rel="stylesheet" href="works.css">\n', b'')
             data = data.replace(b'<script src="motion.js" defer></script>\n', b'')
+            # Only the verified metadata blocks are new; preserve the surrounding
+            # published card markup, source images, order and destinations.
+            data = re.sub(rb'^            <span class="work-details">\n.*?^            </span>\n',
+                          b'', data, flags=re.M | re.S)
         assert hashlib.sha256(data).hexdigest() == source['sha256'], \
             f'Published layout, styles or original interaction code changed: {source["path"]}'
 
