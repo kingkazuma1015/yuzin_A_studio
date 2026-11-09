@@ -1,6 +1,8 @@
 /* Motion layer for the published neutral studio design. Layout and type stay intact. */
-/* Keep the service heading and waveform in normal document flow. */
-.service-section .chapter-heading{position:static;top:auto}
+/* Keep chapter headings and their decorations in normal document flow. */
+.service-section .chapter-heading,
+.price-section .chapter-heading,
+.flow-section .chapter-heading{position:static;top:auto}
 .studio-motion .hero-copy h1{animation:none}
 .studio-motion .hero::before{
   transform:translate3d(var(--photo-x,0px),var(--photo-y,0px),0) scale(1.035);
