@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "public_url": "https://yuzin-a-studio.com/",
+  "source_repository": "https://github.com/kingkazuma1015/yuzin_A_studio",
+  "source_branch": "main",
+  "published_source_commit": "2dafd9f3296e32de938aa8da7e597c322a5b8eb5",
+  "published_at": "2026-11-09T15:42:00+09:00",
+  "verified_at": "2026-11-09T15:44:06.975745+09:00",
+  "provider": "Netlify",
+  "project": "lustrous-pithivier-80c25d",
+  "deploy_id": "6af16b5eb5a104e5434d823b",
+  "deploy_url": "https://app.netlify.com/projects/lustrous-pithivier-80c25d/deploys/6af16b5eb5a104e5434d823b",
+  "previous_deploy_id": "6ae9db8609ce7bbce1ea1398",
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 29926,
+      "sha256": "d4493d6bcfba7bfe8932288afc9c3e5afb6c9bf34187c0c7f152bc179f4be0ae"
+    },
+    {
+      "path": "style.css",
+      "bytes": 31892,
+      "sha256": "71389f09ddc5329e909f4c0ef8545add24d8acc0ea6339aa3095316d67adf4ad"
+    },
+    {
+      "path": "script.js",
+      "bytes": 20125,
+      "sha256": "53fd73995a23e4f570e4a13b84b296b2820259a541ef9db444f111426c8f9af9"
+    },
+    {
+      "path": "reconstruction.css",
+      "bytes": 9617,
+      "sha256": "55a3b8460493528f1338ad7bf56b5985d816f75175053096834a242918533a7c"
+    },
+    {
+      "path": "selected-visual.css",
+      "bytes": 6622,
+      "sha256": "eefd24b5e56c0804a63f1be3fffe289a4711da7b0386992389191f78bc8899a7"
+    },
+    {
+      "path": "typography.css",
+      "bytes": 7281,
+      "sha256": "68bce4a18e175948f3fc108b41807a6d3423b015d22e0a20f6e60720f0bf331f"
+    },
+    {
+      "path": "motion.css",
+      "bytes": 3346,
+      "sha256": "32f9db659ea16cff9a817c9aa59ff1a45c4733298ca058b6675fe05485ce6bf1"
+    },
+    {
+      "path": "motion.js",
+      "bytes": 9106,
+      "sha256": "33835083bfb140c81885195d0de07e4da4487e4be1cfe5508779fdc60565c8b6"
+    },
+    {
+      "path": "works.css",
+      "bytes": 815,
+      "sha256": "640577af01c6fd8ff09c0d30fecb2e7a8725bf3987273b85510e7e4ae2ca55d7"
+    },
+    {
+      "path": "assets/approved-a-screen.jpg",
+      "bytes": 55062,
+      "sha256": "99ae9d48d21e0d6fc24d1ea15a23ae295f837d81f6cbc4ee1347708121da91ef"
+    },
+    {
+      "path": "assets/hero-studio-illustration.svg",
+      "bytes": 5687,
+      "sha256": "c21a02918f32c195dd8cedd81ae9dce18add8db0f92189a25de1854d60741048"
+    },
+    {
+      "path": "assets/social-card.png",
+      "bytes": 76928,
+      "sha256": "14616af2ba94c83042291a1adf1f51b14a6348ac8ac302d95c54a0570d7f55a6"
+    },
+    {
+      "path": "assets/social-card.svg",
+      "bytes": 1225,
+      "sha256": "4711c9654c6800ac93a6cdb8b3130743ec6807f56f11a5d29274fa999739a9fd"
+    },
+    {
+      "path": "assets/studio-emily.jpg",
+      "bytes": 86945,
+      "sha256": "9d3d9414a1fe1d7fefa04c501e0939767bc786b4665ff8578fab73cd53c0772d"
+    }
+  ]
+}
