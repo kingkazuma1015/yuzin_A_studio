@@ -13,6 +13,10 @@ from urllib.parse import parse_qs, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = json.loads((ROOT / 'tests/content-baseline.json').read_text())
 PUBLISHED = json.loads((ROOT / 'tests/published-baseline.json').read_text())
+# User-authorized copy change on 2026-11-12. Keep both historical baselines
+# immutable and allow only this exact replacement in the three existing places.
+OLD_LEAD_TIME = '5〜7日程度'
+NEW_LEAD_TIME = '2週間前後'
 
 
 def compact(text):
@@ -49,9 +53,12 @@ def check():
     text = compact(''.join(p.fragments))
     # Clone removal is deliberate: compare unique original copy, not presentation
     # counts. The close glyph and year are UI values, not business-copy contracts.
-    original = [s for s in PUBLISHED['published_text'] if s not in {'×', '2026', '©'}]
+    original = [s.replace(OLD_LEAD_TIME, NEW_LEAD_TIME)
+                for s in PUBLISHED['published_text'] if s not in {'×', '2026', '©'}]
     missing = [s for s in original if compact(s) not in text]
     assert not missing, 'Original copy changed or missing:\n' + '\n'.join(missing)
+    assert html.count(NEW_LEAD_TIME) == 3, 'Lead time must agree in guide, flow and FAQ'
+    assert OLD_LEAD_TIME not in html, 'Outdated lead time remains in displayed copy'
 
     anchors = [a for tag, a in p.elements if tag == 'a']
     links = {a.get('href') for a in anchors}
@@ -79,6 +86,7 @@ def check():
     for source in PUBLISHED['source_files']:
         data = (ROOT / source['path']).read_bytes()
         if source['path'] == 'index.html':
+            data = data.replace(NEW_LEAD_TIME.encode(), OLD_LEAD_TIME.encode())
             data = data.replace(b'  <link rel="stylesheet" href="motion.css">\n', b'')
             data = data.replace(b'  <link rel="stylesheet" href="works.css">\n', b'')
             data = data.replace(b'<script src="motion.js" defer></script>\n', b'')
@@ -103,7 +111,8 @@ def check():
         assert not re.search(forbidden, active, re.I), f'Unexpected data/network feed: {forbidden}'
     print(f'PASS: {len(original)} unique original text fragments; all original destinations; '
           'nine ordered works including KING / 東京駅; source image descriptions; '
-          'original and published assets; current published copy/metadata; static contact fallback; no data feed')
+          'original and published assets; authorized two-week lead time in three places; '
+          'preserved copy/metadata; static contact fallback; no data feed')
 
 
 if __name__ == '__main__':
