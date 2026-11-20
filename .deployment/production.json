@@ -3,19 +3,19 @@
   "public_url": "https://yuzin-a-studio.com/",
   "source_repository": "https://github.com/kingkazuma1015/yuzin_A_studio",
   "source_branch": "main",
-  "published_source_commit": "2dafd9f3296e32de938aa8da7e597c322a5b8eb5",
-  "published_at": "2026-11-09T15:42:00+09:00",
-  "verified_at": "2026-11-09T15:44:06.975745+09:00",
+  "published_source_commit": "496cdc2a197290f921d73470c4633984c1f55030",
+  "published_at": "2026-11-20T17:18:00+09:00",
+  "verified_at": "2026-11-20T17:20:28.387455+09:00",
   "provider": "Netlify",
   "project": "lustrous-pithivier-80c25d",
-  "deploy_id": "6af16b5eb5a104e5434d823b",
-  "deploy_url": "https://app.netlify.com/projects/lustrous-pithivier-80c25d/deploys/6af16b5eb5a104e5434d823b",
-  "previous_deploy_id": "6ae9db8609ce7bbce1ea1398",
+  "deploy_id": "6b0002432df0729b0c19e72a",
+  "deploy_url": "https://app.netlify.com/projects/lustrous-pithivier-80c25d/deploys/6b0002432df0729b0c19e72a",
+  "previous_deploy_id": "6af54f0158b3c76681f3d0b1",
   "files": [
     {
       "path": "index.html",
-      "bytes": 29926,
-      "sha256": "d4493d6bcfba7bfe8932288afc9c3e5afb6c9bf34187c0c7f152bc179f4be0ae"
+      "bytes": 29739,
+      "sha256": "b0e21e71d1eaaea58d2b1c34b6c1abe1e4daa5edc568d39324574e9e41f0f409"
     },
     {
       "path": "style.css",
@@ -54,8 +54,8 @@
     },
     {
       "path": "works.css",
-      "bytes": 815,
-      "sha256": "640577af01c6fd8ff09c0d30fecb2e7a8725bf3987273b85510e7e4ae2ca55d7"
+      "bytes": 855,
+      "sha256": "8ec065f71b85ac2cab9b25394df66575b19625864daacd12e6065bb8be9afdc5"
     },
     {
       "path": "assets/approved-a-screen.jpg",
@@ -81,6 +81,21 @@
       "path": "assets/studio-emily.jpg",
       "bytes": 86945,
       "sha256": "9d3d9414a1fe1d7fefa04c501e0939767bc786b4665ff8578fab73cd53c0772d"
+    },
+    {
+      "path": "logo.css",
+      "bytes": 194,
+      "sha256": "ca518c48e623c1be274d9bbff527e6322de3d9bb46d33f9f55abe0a23a73a88f"
+    },
+    {
+      "path": "assets/yuzina-logo.svg",
+      "bytes": 581,
+      "sha256": "4cf5986b9594b03a9301d07d4656f624280eb3f9f9cc0b10e700d03a5ac4dbf2"
+    },
+    {
+      "path": "design-review.css",
+      "bytes": 14407,
+      "sha256": "fd25c2ee39e9535858b388b24ea3f06f4a921d6f6a277813c9610ab88992aa15"
     }
   ]
 }

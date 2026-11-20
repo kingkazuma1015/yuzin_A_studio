@@ -4,7 +4,20 @@
 
 公開先: https://yuzin-a-studio.com/
 
-## 2026-11-20 スキルを使ったデザイン再構成（未公開）
+## 2026-11-20 公開の検証記録
+
+- 公開先: https://yuzin-a-studio.com/
+- 公開元ソース: `496cdc2a197290f921d73470c4633984c1f55030`
+- Netlifyデプロイ: `6b0002432df0729b0c19e72a`
+- 更新前のデプロイ: `6af54f0158b3c76681f3d0b1`
+- 独自ドメインから取得した配布対象17ファイルが公開用ファイルとSHA-256で一致。
+- Chromeで独自ドメインの新ロゴ、背景に溶け込む写真、作品一覧、料金の3列表示を確認。
+- 作品一覧のカウンター・左右ボタンはHTMLから削除済み。
+- 公開前の回帰テストはすべて成功。公開前の保存版・公開用ZIP・照合結果は
+  `.release/publication-20261120-171518/` に保存しています（Git管理対象外）。
+- 公開済みファイルの照合は `python3 scripts/check_published.py` を実行してください。
+
+## 2026-11-20 スキルを使ったデザイン再構成（公開済み）
 
 `frontend-design`、`no-ai-design-slop`、`ui-ux-pro-max` を使用し、
 `design-review.css` でページ全体の構成を調整しています。
@@ -22,11 +35,11 @@
 検証・スクリーンショットは `.release/design-revision-20261120/` に保存します。
 直前の案は同フォルダの `rejected-proposal/` に保持しています。
 
-これはローカルの未公開案です。配布対象17ファイルのハッシュは
-`.deployment/pending-logo.json` に記録しています。公開記録 `.deployment/production.json` は変更していません。
-次回配布時には `design-review.css` も含めてください。
+この変更は2026-11-20にNetlifyの既存プロジェクトへ公開済みです。
+配布対象17ファイルのハッシュと公開元コミットは `.deployment/production.json` に記録しています。
+次回配布時にも `design-review.css` を含めてください。
 
-## 2026-11-20 ヘッダーロゴの差し替え（未公開）
+## 2026-11-20 ヘッダーロゴの差し替え（公開済み）
 
 提供された `yuzina_codex_logo.zip` の実装指示に沿って、ヘッダー左上の文字組みの
 YAマークを `assets/yuzina-logo.svg` に置き換えています。SVGは添付素材をそのまま使用し、
@@ -34,11 +47,9 @@ YAマークを `assets/yuzina-logo.svg` に置き換えています。SVGは添�
 表示幅はPCで48px、760px以下で38pxです。リンク名は「YuzinA Studio ホーム」とし、
 画像は装飾扱いで名前の重複読み上げを防ぎます。
 
-この変更はローカル確認用で、本番公開・pushは行いません。
-次回公開の配布対象とローカルファイルのハッシュは `.deployment/pending-logo.json` に記録します。
+このロゴ変更も同日のデザイン再構成とともに本番公開し、更新元へ保存しています。
 追加の配布対象は `logo.css` と `assets/yuzina-logo.svg` です。
-`.deployment/production.json` は過去の公開記録として維持しているため、
-現在の納期変更および未公開ロゴとはハッシュが異なります。
+現在の公開ファイルは `.deployment/production.json` に記録しています。
 
 検証: `python3 tests/check_site.py` がすべて成功。
 Chromeで320 / 390 / 760 / 761 / 1024 / 1440px幅の画像読み込み、縦横比、
@@ -46,7 +57,7 @@ Chromeで320 / 390 / 760 / 761 / 1024 / 1440px幅の画像読み込み、縦横�
 ホームリンクを確認しました。PC・スマートフォンのスクリーンショットと測定結果は
 `.release/logo-preview-20261120/` に保存しています（ローカル確認用、Git管理対象外）。
 
-同日の追加調整として、作品一覧の番号・左右ボタンを `works.css` で非表示にし、
+同日の追加調整として、作品一覧のカウンターと左右ボタンはHTMLから削除し、
 「スワイプ・ドラッグで作品を見る」の案内はHTMLから削除しています。
 非表示の操作部品はキーボードフォーカスや読み上げの対象からも外れます。
 作品の自動スクロール、スワイプ、ドラッグ、動画表示は維持します。
@@ -76,7 +87,7 @@ git log --oneline --left-right HEAD...origin/main
 python3 scripts/check_published.py
 ```
 
-公開記録は `.deployment/production.json` に保存しています。全14ファイルの SHA-256、
+公開記録は `.deployment/production.json` に保存しています。現在の全17ファイルの SHA-256、
 公開元コミット、Netlify デプロイIDを記録し、不一致があれば照合は失敗します。
 通信なしで手元のみを調べる場合は `--offline`、未公開の編集がある状態で本番だけを調べる場合は `--live-only` を付けます。
 公開元コミットは配布したファイルの版です。その後の手順書・公開記録のコミットとは区別します。
