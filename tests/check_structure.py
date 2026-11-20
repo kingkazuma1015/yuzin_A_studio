@@ -48,7 +48,11 @@ def check():
         if node['tag'] == 'img':
             assert 'alt' in attrs, 'Every image needs explicit alt text'
             assert int(attrs.get('width', 0)) > 0 and int(attrs.get('height', 0)) > 0, 'Reserve image dimensions'
-            assert attrs.get('loading') == 'lazy', 'Below-fold work imagery must lazy-load'
+            if 'brand-monogram' in attrs.get('class', '').split():
+                assert attrs.get('loading') == 'eager', 'Above-fold logo must load immediately'
+                assert attrs.get('alt') == '', 'Home link already provides the logo name'
+            else:
+                assert attrs.get('loading') == 'lazy', 'Below-fold work imagery must lazy-load'
         if node['tag'] == 'iframe':
             assert attrs.get('title'), 'Embedded video requires accessible title'
             assert 'autoplay=1' not in attrs.get('src', ''), 'No autoplay media'
@@ -67,7 +71,7 @@ def check():
     assert png[:8] == b'\x89PNG\r\n\x1a\n' and struct.unpack('>II', png[16:24]) == (1200, 630)
 
     css = '\n'.join((ROOT / name).read_text() for name in
-                    ['style.css', 'reconstruction.css', 'selected-visual.css', 'typography.css', 'motion.css', 'works.css'])
+                    ['style.css', 'reconstruction.css', 'selected-visual.css', 'typography.css', 'motion.css', 'works.css', 'logo.css', 'design-review.css'])
     assert 'prefers-reduced-motion' in css, 'Reduced-motion CSS required'
     assert ':focus-visible' in css, 'Keyboard focus styling required'
     assert 'overflow-x:auto' in css.replace(' ', ''), 'Native portfolio horizontal scrolling required'

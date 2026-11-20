@@ -5,3 +5,6 @@ __pycache__/
 .env.*
 !.env.example
 .release/
+
+# Local design audit reports and isolated Chrome profiles.
+.taste-skill/

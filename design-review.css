@@ -1,0 +1,259 @@
+/* YuzinA Studio: integrated studio image, music portfolio, clear commission menus. */
+:root {
+  --studio-width: 1280px;
+  --gutter: max(24px, calc((100vw - var(--studio-width)) / 2));
+  --section-space: clamp(80px, 8vw, 128px);
+}
+html { scroll-padding-top: 108px; }
+.section-shell { padding-block: var(--section-space); }
+.section-heading .section-index,
+.chapter-heading > .section-index,
+.contact-kicker > .section-index { display: none; }
+.section-label { font-size: 13px; letter-spacing: .01em; }
+.chapter-heading h2, .section-heading h2 { font-size: clamp(32px, 3.5vw, 48px); line-height: 1.4; }
+.chapter-heading { position: static; }
+.section-body { min-width: 0; }
+.section-body > p { font-size: 16px; line-height: 2; max-width: 39em; }
+.section-body > p:last-child { margin-bottom: 0; }
+
+/* Restore the photograph's original dissolve into the page. No separate photo panel. */
+.hero { padding-top: 132px; }
+.hero-topline { display: none; }
+.hero-main {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  min-height: 588px;
+  padding-top: 0;
+}
+.hero-copy { max-width: 760px; padding: 48px 0 44px; }
+.hero .eyebrow { font-size: 14px; margin-bottom: 28px; }
+.hero h1 { font-size: clamp(36px, 4.6vw, 66px); line-height: 1.45; letter-spacing: -.045em; margin-bottom: 28px; }
+.hero-copy > p:not(.eyebrow) { max-width: 28em; font-size: 16px; line-height: 1.9; }
+.hero-tags { font-size: 13px; gap: 9px 18px; margin: 28px 0; }
+.hero .button { min-width: 168px; min-height: 58px; }
+.hero-art { visibility: hidden; background: none; width: 100%; margin: 0; }
+.hero-bottom { border-top: 0; padding: 16px 0 32px; }
+.hero-wordmark { font-size: clamp(64px, 7vw, 100px); letter-spacing: -.06em; opacity: .45; }
+.hero-scroll { display: flex; color: var(--ink); font-size: 11px; letter-spacing: .02em; }
+.hero-scroll > span { color: var(--ink); font-size: 24px; }
+.hero-bottom-note { display: none; }
+
+/* The artwork carries this section; labels and credits stay useful and readable. */
+.works-strip { padding-top: 80px; padding-bottom: 24px; }
+.works-heading { align-items: baseline; gap: 24px; margin-bottom: 40px; }
+.works-heading > div:first-of-type { display: flex; align-items: baseline; gap: 24px; }
+.works-heading .section-label { font-size: clamp(60px, 6.8vw, 96px); line-height: 1; letter-spacing: -.06em; margin: 0; }
+.works-heading h2 { font-size: 24px; }
+.works-marquee { width: 100%; margin-left: 0; }
+.works-track { padding: 4px 0 8px; gap: 28px; }
+.work-card { width: clamp(300px, 29vw, 416px); }
+.work-image { border: 0; border-radius: 0; }
+.work-image::after { display: none; }
+.work-image img { filter: none; }
+.work-caption { font-size: 12px; padding-top: 16px; }
+.work-caption-line { display: none; }
+.work-details { margin-top: 0; gap: 5px; padding-bottom: 12px; }
+.work-title { font-size: 22px; line-height: 1.5; margin-bottom: 8px; }
+.work-info { font-size: 14px; line-height: 1.8; gap: 12px; }
+.playlist-section { padding-top: 40px; padding-bottom: 80px; gap: 64px; }
+.playlist-copy { padding-left: 0; max-width: 32em; }
+.playlist-copy .section-label { display: none; }
+.playlist-copy h2 { font-size: 25px; }
+.playlist-copy > p:last-child { font-size: 15px; line-height: 1.9; }
+.playlist-card { padding-block: 24px; gap: 24px; }
+.playlist-card-media { width: 144px; }
+.playlist-play { font-size: 12px; }
+.playlist-card-text > span { font-size: 13px; }
+
+.about-section, .faq-section { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 80px; }
+.about-figures { justify-content: flex-start; gap: 80px; margin-bottom: 40px; padding-bottom: 32px; }
+.about-figures strong { font-size: 64px; letter-spacing: -.055em; }
+.about-figures > div { font-size: 12px; }
+
+/* Four actual services, in an open two-column list. */
+.service-section { display: block; border-top: 0; border-bottom: 0; }
+.service-section .chapter-heading { display: block; }
+.service-section .chapter-heading .section-label { margin-bottom: 14px; }
+.service-section .chapter-heading h2 { margin: 0; }
+.service-signal { display: none; }
+.service-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; border-top: 0; margin-top: 56px; }
+.service-row { display: block; padding: 32px 0 40px; border-top: 1px solid var(--line); border-bottom: 0; }
+.service-number { display: none; }
+.service-row h3 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+.service-row p { font-size: 16px; line-height: 1.9; max-width: 31em; }
+
+/* The three standard formats compare directly; the two additional options read as rows. */
+.price-section { display: block; }
+.price-section .chapter-heading { position: static; }
+.price-section .chapter-heading h2 { margin-bottom: 0; }
+.price-decoration { display: none; }
+.price-content { margin-top: 48px; }
+.price-table { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 48px; border-top: 0; }
+.price-head { position: absolute; display: flex; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.price-row:nth-child(n+2):nth-child(-n+4) {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 20px;
+  padding: 32px 0 40px; border-top: 1px solid var(--line); border-bottom: 0;
+}
+.price-row:nth-child(n+2):nth-child(-n+4) > div:first-child { align-self: auto; font-size: 20px; font-weight: 500; }
+.price-row:nth-child(n+2):nth-child(-n+4) > div:nth-child(2) { font-size: clamp(36px, 3.8vw, 52px); line-height: 1.2; text-align: left; letter-spacing: -.045em; }
+.price-row > div:last-child { font-size: 15px; line-height: 1.9; }
+.price-row:nth-child(n+5) { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 2fr; align-items: baseline; column-gap: 32px; padding: 28px 0; border-top: 1px solid var(--line); border-bottom: 0; }
+.price-row:nth-child(n+5) > div:first-child { font-size: 18px; }
+.price-row:nth-child(n+5) > div:nth-child(2) { font-size: 28px; text-align: left; }
+.price-row:nth-child(n+5) > div:last-child { grid-column: auto; }
+.price-row:not(.price-head):hover { background: transparent; }
+.price-notes { border-top: 1px solid var(--line); padding-top: 28px; margin-top: 0; font-size: 14px; max-width: none; }
+
+.guide-section { padding-block: 80px; }
+.guide-heading { display: block; margin-bottom: 40px; }
+.guide-heading h2 { font-size: 30px; }
+.guide-grid { gap: 48px; }
+.guide-grid article > span { display: none; }
+.guide-grid article { padding-top: 24px; }
+.guide-grid h3 { font-size: 22px; }
+.guide-grid p, .guide-grid ul { font-size: 16px; line-height: 1.9; }
+
+/* Step numbers express a real sequence and remain visible on every viewport. */
+.flow-section { display: block; }
+.flow-section .chapter-heading h2 { margin-bottom: 0; }
+.flow-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: 56px; }
+.flow-list li { display: block; padding: 0; }
+.flow-list li:not(:last-child)::before,
+.studio-motion .flow-list li:not(:last-child)::after { display: none; }
+.flow-list li > span { width: 48px; height: 48px; margin-bottom: 28px; font-size: 14px; }
+.flow-list li > div { padding: 0; border-top: 1px solid var(--line); padding-top: 24px; }
+.flow-list h3 { font-size: 22px; line-height: 1.5; margin-bottom: 16px; }
+.flow-list p { font-size: 16px; line-height: 1.9; }
+@media (min-width: 761px) { .flow-list h3 { min-height: 3em; } }
+.faq-section { padding-top: 32px; }
+.faq-list summary { font-size: 17px; }
+.faq-list details > p { font-size: 16px; line-height: 1.9; }
+
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 80px; padding-block: 80px; }
+.contact-kicker { grid-column: 1 / -1; margin-bottom: 40px; }
+.contact-kicker > span:last-child { display: none; }
+.contact h2 { grid-column: 1; grid-row: 2; font-size: clamp(40px, 4.6vw, 64px); margin-bottom: 24px; }
+.contact > p { grid-column: 1; }
+.contact > p:not(.contact-note) { font-size: 16px; line-height: 1.9; }
+.contact-buttons { grid-column: 2; grid-row: 2 / span 3; display: flex; flex-direction: column; gap: 16px; margin: 0; align-self: start; }
+.contact .button { width: 100%; min-height: 76px; font-size: 19px; }
+.contact-note { grid-column: 1 / -1 !important; max-width: 70em; font-size: 14px; margin-top: 16px; }
+.site-footer { padding-block: 32px; }
+.site-footer p { font-size: 13px; }
+.nav a { min-height: 44px; display: inline-flex; align-items: center; }
+.nav .nav-contact { min-height: 48px; }
+.studio-motion .button, .studio-motion .nav-contact { translate: none; }
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .hero-main { min-height: 560px; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+  .hero h1 { font-size: clamp(32px, 4.6vw, 48px); }
+  .hero-copy { padding-right: 0; }
+  .hero .button { min-width: 0; }
+  .hero .eyebrow { margin-bottom: 24px; }
+  .about-section, .faq-section { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; }
+  .about-figures { gap: 48px; }
+  .service-grid { column-gap: 40px; }
+  .price-table { column-gap: 28px; }
+  .price-row:nth-child(n+2):nth-child(-n+4) > div:first-child { font-size: 18px; }
+  .guide-grid { gap: 28px; }
+  .flow-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
+  .contact { column-gap: 40px; }
+}
+@media (max-width: 760px) {
+  :root { --section-space: 72px; }
+  .hero, .has-menu ~ main .hero { padding-top: 112px; }
+  .hero-main { display: block; min-height: 0; padding: 0; }
+  .hero-copy { padding: 32px 0 0; }
+  .hero .eyebrow { font-size: 13px; margin-bottom: 24px; }
+  .hero h1 { font-size: clamp(29px, 7.6vw, 48px); line-height: 1.5; margin-bottom: 24px; }
+  .hero-copy > p:not(.eyebrow) { font-size: 16px; line-height: 1.9; max-width: 30em; }
+  .hero-tags { margin: 24px 0; gap: 8px 12px; font-size: 12px; }
+  .hero-tags span:not(:first-child) { font-size: 12px; }
+  .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hero .button { width: 100%; min-width: 0; min-height: 56px; padding: 14px 8px; font-size: 14px; }
+  .hero-art { display: block; visibility: hidden; height: 200px; width: 100%; margin: 0; }
+  .hero-bottom { padding: 8px 0 32px; }
+  .hero-wordmark { font-size: clamp(56px, 16vw, 88px); }
+  .hero-scroll { font-size: 10px; gap: 8px; }
+  .hero-scroll > span { font-size: 22px; }
+  .works-strip { padding-top: 56px; padding-bottom: 20px; }
+  .works-heading { margin-bottom: 32px; }
+  .works-heading > div:first-of-type { gap: 20px; }
+  .works-heading .section-label { font-size: 60px; }
+  .works-heading h2 { font-size: 20px; }
+  .works-track { gap: 20px; }
+  .work-card { width: 84vw; max-width: 440px; }
+  .work-title { font-size: 21px; }
+  .work-info { font-size: 14px; }
+  .playlist-section { grid-template-columns: 1fr; gap: 24px; padding-top: 24px; padding-bottom: 64px; }
+  .playlist-copy h2 { font-size: 24px; }
+  .playlist-copy > p:last-child { font-size: 16px; }
+  .playlist-card-media { width: 100px; }
+  .playlist-card { gap: 18px; padding-block: 20px; }
+  .playlist-card-text > span { font-size: 13px; }
+  .chapter-heading .section-label { display: block; margin: 0 0 12px; }
+  .chapter-heading h2, .section-heading h2 { font-size: 32px; }
+  .about-section, .faq-section { grid-template-columns: 1fr; gap: 32px; }
+  .about-figures { gap: 40px; justify-content: space-between; }
+  .about-figures strong { font-size: 48px; }
+  .about-figures > div { font-size: 12px; }
+  .section-body > p { font-size: 16px; }
+  .service-section .chapter-heading { display: block; }
+  .service-section .chapter-heading .section-label { margin-bottom: 12px; }
+  .service-grid { grid-template-columns: 1fr; margin-top: 32px; }
+  .service-row { padding: 28px 0; }
+  .service-row h3 { font-size: 23px; }
+  .service-row p { font-size: 16px; }
+  .price-content { margin-top: 32px; }
+  .price-table { grid-template-columns: 1fr; gap: 0; }
+  .price-row:nth-child(n+2):nth-child(-n+4) { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 28px 0; }
+  .price-row:nth-child(n+2):nth-child(-n+4) > div:first-child { align-self: center; font-size: 17px; }
+  .price-row:nth-child(n+2):nth-child(-n+4) > div:nth-child(2) { font-size: 32px; }
+  .price-row:nth-child(n+2):nth-child(-n+4) > div:last-child { grid-column: 1 / -1; }
+  .price-row:nth-child(n+5) { grid-template-columns: 1fr auto; gap: 12px; padding-block: 28px; }
+  .price-row:nth-child(n+5) > div:first-child { font-size: 17px; }
+  .price-row:nth-child(n+5) > div:nth-child(2) { font-size: 26px; }
+  .price-row:nth-child(n+5) > div:last-child { grid-column: 1 / -1; }
+  .price-row > div:last-child, .price-notes { font-size: 15px; }
+  .guide-section { padding-block: 64px; }
+  .guide-heading h2 { font-size: 28px; }
+  .guide-grid { gap: 28px; }
+  .guide-grid article { display: block; }
+  .guide-grid h3 { font-size: 22px; }
+  .flow-list { grid-template-columns: 1fr; gap: 32px; margin-top: 40px; }
+  .flow-list li { display: flex; gap: 20px; }
+  .flow-list li > span { width: 40px; height: 40px; margin: 0; }
+  .flow-list li > div { padding-top: 6px; border-top: 0; }
+  .flow-list h3 { font-size: 22px; }
+  .flow-list p, .faq-list details > p { font-size: 16px; }
+  .faq-section { padding-top: 16px; }
+  .faq-list summary { font-size: 16px; }
+  .contact { display: block; padding-block: 64px; }
+  .contact-kicker { margin-bottom: 32px; }
+  .contact h2 { font-size: 40px; }
+  .contact-buttons { margin: 32px 0; }
+  .contact .button { min-height: 64px; font-size: 18px; }
+  .contact-note { font-size: 14px; }
+}
+@media (max-width: 359px) {
+  :root { --gutter: 18px; }
+  .hero h1 { font-size: 27px; }
+  .hero .button { font-size: 13px; }
+  .hero-tags span:not(:first-child) { font-size: 11px; }
+  .hero-scroll { display: none; }
+  .works-heading .section-label { font-size: 50px; }
+  .works-heading h2 { font-size: 18px; }
+  .works-heading > div:first-of-type { gap: 16px; }
+  .about-figures strong { font-size: 42px; }
+  .price-row:nth-child(n+2):nth-child(-n+4) > div:first-child,
+  .price-row:nth-child(n+5) > div:first-child { font-size: 15px; }
+  .price-row:nth-child(n+2):nth-child(-n+4) > div:nth-child(2) { font-size: 28px; }
+  .playlist-card { gap: 12px; flex-wrap: wrap; }
+  .playlist-card-media { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button:active { transform: none; }
+}
+@media print {
+  .price-table, .flow-list, .service-grid, .contact { display: block; }
+  .price-head { display: flex; }
+}

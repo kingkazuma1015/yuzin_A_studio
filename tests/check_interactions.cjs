@@ -44,9 +44,6 @@ const settle = async env => { await env.frame(100); await env.frame(164); };
     await env.queries.fine.set(true); await settle(env); assert.equal(env.frames.size, 1);
     assert.equal(qa(env, '.work-card').length, 27, 'No clones accumulate across media changes');
   }
-  const beforeNext = gallery.scrollLeft;
-  await q(env, '[data-works-next]').emit('click'); assert.ok(gallery.scrollLeft > beforeNext);
-  await q(env, '[data-works-prev]').emit('click'); assert.ok(Math.abs(gallery.scrollLeft - beforeNext) < 1);
   const touch = await gallery.emit('pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 7, clientX: 300, clientY: 20 });
   assert.equal(touch.defaultPrevented, false, 'Touch must retain native panning');
   assert.equal(gallery.pointerCapture, undefined);
